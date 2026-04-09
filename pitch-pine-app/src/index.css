@@ -1,0 +1,38 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-background text-primary font-sans;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+  }
+}
+
+.noise-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 9999;
+  /* Using standard CSS filter rather than inline SVG if preferred, or standard SVG */
+  filter: url(#noiseFilter);
+  opacity: 0.05;
+}
+
+@layer utilities {
+  .text-shadow-hero {
+    text-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+  }
+
+  .glass-panel {
+    background: rgba(26, 19, 14, 0.4);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+}
