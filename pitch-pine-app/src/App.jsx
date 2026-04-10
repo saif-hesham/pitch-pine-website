@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { MousePointer2, CheckCircle2, ChevronDown, MoveRight, PhoneCall, ChevronLeft, ChevronRight, Image as ImageIcon } from 'lucide-react';
+import { MousePointer2, MoveRight, PhoneCall, ChevronLeft, ChevronRight, Image as ImageIcon } from 'lucide-react';
 import clsx from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { supabase } from './supabase';
@@ -80,8 +80,8 @@ const Navbar = () => {
       className="fixed top-6 left-1/2 -translate-x-1/2 z-50 transition-all duration-500 rounded-full px-6 py-3 w-[90%] max-w-5xl flex items-center justify-between [&.nav-scrolled]:bg-background/80 [&.nav-scrolled]:backdrop-blur-xl [&.nav-scrolled]:border [&.nav-scrolled]:border-primary/10"
     >
       <div className="flex items-center gap-3">
-        {/* Placeholder for Logo - In a real app we'd use an img tag */}
         <div className="font-heading font-bold text-xl tracking-wide flex items-center gap-2">
+          <img src="/download.png" alt="Pitch Pine" className="h-10 w-auto object-contain" />
           <span className="text-accent">|</span> PITCH PINE
         </div>
       </div>
@@ -97,7 +97,7 @@ const Navbar = () => {
           معرض الأعمال
         </a>
       </nav>
-      <MagneticButton className="hidden md:flex py-2 px-5 text-sm" variant="outline">
+      <MagneticButton className="flex py-2 px-5 text-sm" variant="outline" onClick={() => window.location.href = 'tel:+201017781162'}>
         احجز استشارة <PhoneCall size={16} />
       </MagneticButton>
     </header>
@@ -210,7 +210,7 @@ const Hero = () => {
         <div className="relative z-10 w-full max-w-5xl pt-24 text-right ml-auto">
           <h1 className="flex flex-col gap-3">
             <span className="hero-text text-2xl md:text-3xl lg:text-4xl font-heading font-bold text-primary/80 block">
-              بتش باين هي
+              بيتش باين هي
             </span>
             <span className="hero-text text-6xl md:text-[5.5rem] lg:pb-12 xl:text-[6.5rem] font-drama font-bold text-transparent bg-clip-text bg-gradient-to-br from-[#F4EFE6] via-[#D48C46] to-[#8A5A29] leading-[1.2] pt-2 block pl-0 drop-shadow-sm">
               الفخامة المطلقة في عالم المطابخ.
@@ -221,8 +221,8 @@ const Hero = () => {
             نصنع مطابخ استثنائية تمزج بين الحرفية الرفيعة والتصميم المبتكر لتلائم ذوقك الرفيع.
           </p>
           <div className="hero-text mt-12">
-            <MagneticButton className="text-lg">
-              اسأل عن استشارتك <MoveRight size={20} className="mr-2" />
+            <MagneticButton className="text-lg" onClick={() => window.location.href = 'tel:+201017781162'}>
+              احجز استشارتك الآن <PhoneCall size={20} className="mr-2" />
             </MagneticButton>
           </div>
         </div>
@@ -456,7 +456,7 @@ const Philosophy = () => {
   const part3 = "تُصنع خصيصاً لك، تدوم لأجيال.".split(" ");
 
   return (
-    <section id="الفلسفة" ref={sectionRef} className="relative py-40 px-6 lg:px-24 overflow-hidden bg-dark">
+    <section id="الفلسفة" ref={sectionRef} className="relative py-28 px-6 lg:px-24 overflow-hidden bg-dark">
       <div
         className="bg-texture absolute inset-0 z-0 bg-cover bg-center opacity-10"
         style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070&auto=format&fit=crop)', top: '-50px', height: 'calc(100% + 100px)' }}
@@ -595,10 +595,10 @@ const GetStarted = () => {
         <div className="absolute inset-0 bg-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
         <h2 className="text-4xl lg:text-5xl font-heading font-bold text-primary mb-6 relative z-10">هل أنت مستعد لمطبخ أحلامك؟</h2>
         <p className="text-xl text-primary/70 font-sans mb-12 max-w-2xl mx-auto relative z-10">
-          احجز استشارتك الآن ودع خبراء "بتش باين" يخططون لمساحتك بأعلى معايير الجودة العالمية.
+          احجز استشارتك الآن ودع خبراء "بيتش باين" يخططون لمساحتك بأعلى معايير الجودة العالمية.
         </p>
-        <MagneticButton className="text-xl py-4 px-12 relative z-10">
-          ابدأ الآن مجاناً <CheckCircle2 className="mr-2" size={24} />
+        <MagneticButton className="text-xl py-4 px-12 relative z-10" onClick={() => window.location.href = 'tel:+201017781162'}>
+          احجز استشارتك الآن <PhoneCall className="mr-2" size={24} />
         </MagneticButton>
       </div>
     </section>
@@ -612,10 +612,11 @@ const Footer = () => {
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
         <div className="md:col-span-2">
           <h2 className="text-3xl font-heading font-bold mb-4 flex items-center gap-2">
-            <span className="text-accent">|</span> PITCH PINE
+            <img src="/download.png" alt="Pitch Pine" className="h-10 w-auto object-contain" />
+          <span className="text-accent">|</span> PITCH PINE
           </h2>
           <p className="text-primary/60 font-sans max-w-sm leading-relaxed mb-8">
-            بتش باين لخدمات الأعمال الخشبية والمطابخ. نفخر بإنتاج تحف فنية بجودة قياسية في بني سويف، مصر لكل مساحة تصمم معنا.
+            بيتش باين لخدمات الأعمال الخشبية والمطابخ. نفخر بإنتاج تحف فنية بجودة قياسية في بني سويف، مصر لكل مساحة.
           </p>
           <div className="flex items-center gap-3 bg-surface/50 p-4 rounded-2xl w-fit border border-primary/5">
             <div className="w-3 h-3 rounded-full bg-green-500 animate-pulse" />
@@ -634,9 +635,9 @@ const Footer = () => {
         <div>
           <h4 className="font-heading font-bold text-lg mb-6">تواصل معنا</h4>
           <ul className="space-y-4 font-sans text-primary/70">
-            <li>بني سويف، مصر</li>
-            <li dir="ltr" className="text-right">+20 123 456 7890</li>
-            <li>hello@pitchpine.com</li>
+            <li className="leading-relaxed">بني سويف - شارع الروضة - برج الروضة - أمام نهاية سور مدرسة الثانوية العسكرية</li>
+            <li dir="ltr" className="text-right"><a href="tel:+201017781162" className="hover:text-accent transition-colors">010 17781162</a></li>
+            <li>hisham.yousef@gmail.com</li>
           </ul>
         </div>
       </div>
@@ -671,22 +672,11 @@ const GallerySection = () => {
 
   return (
     <section id="أعمالنا" className="relative pb-32 px-6 lg:px-24">
-      <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
-        <div>
-          <h2 className="text-4xl md:text-5xl font-heading font-bold text-primary mb-4">أعمالنا</h2>
-          <p className="text-primary/60 font-sans max-w-lg leading-relaxed">
-            تصفح معرض مشاريعنا المميزة واكتشف كيف نحول المساحات إلى تحف فنية.
-          </p>
-        </div>
-        {!loading && projects.length > 0 && (
-          <button
-            onClick={() => { window.location.hash = '#/gallery'; }}
-            className="flex items-center gap-2 text-accent hover:text-accent/80 font-sans font-medium transition-colors group"
-          >
-            عرض كل المشاريع
-            <MoveRight className="w-4 h-4 group-hover:-translate-x-1 transition-transform rotate-180" />
-          </button>
-        )}
+      <div className="max-w-6xl mx-auto mb-16">
+        <h2 className="text-4xl md:text-5xl font-heading font-bold text-primary mb-4">أعمالنا</h2>
+        <p className="text-primary/60 font-sans max-w-lg leading-relaxed">
+          تصفح معرض مشاريعنا المميزة واكتشف كيف نحول المساحات إلى تحف فنية.
+        </p>
       </div>
 
       <div className="max-w-6xl mx-auto">
@@ -701,29 +691,40 @@ const GallerySection = () => {
             <p className="text-sm border text-primary/40 p-2 rounded max-w-sm" style={{ borderColor: 'rgba(212, 140, 70, 0.4)' }}>سنقوم بنشر أحدث مشاريعنا المكتملة هنا قريباً.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {projects.map((p) => {
-              const coverImage = p.images && p.images.length > 0 ? p.images[p.cover_index || 0] : 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?q=80&w=2070&auto=format&fit=crop';
-              return (
-                <div
-                  key={p.id}
-                  onClick={() => { window.location.hash = `#/project/${p.id}`; }}
-                  className="group relative cursor-pointer h-80 rounded-[2rem] overflow-hidden border border-primary/10 shadow-xl"
-                >
-                  <img
-                    src={coverImage}
-                    alt={p.title}
-                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent transition-opacity group-hover:opacity-90" />
-                  <div className="absolute bottom-0 left-0 right-0 p-8 transform translate-y-2 group-hover:translate-y-0 transition-transform">
-                    <h3 className="text-2xl font-heading font-bold text-primary mb-2">{p.title}</h3>
-                    <p className="text-sm text-primary/70 line-clamp-2">{p.description}</p>
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {projects.map((p) => {
+                const coverImage = p.images && p.images.length > 0 ? p.images[p.cover_index || 0] : 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?q=80&w=2070&auto=format&fit=crop';
+                return (
+                  <div
+                    key={p.id}
+                    onClick={() => { window.location.hash = `#/project/${p.id}`; }}
+                    className="group relative cursor-pointer h-80 rounded-[2rem] overflow-hidden border border-primary/10 shadow-xl"
+                  >
+                    <img
+                      src={coverImage}
+                      alt={p.title}
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent transition-opacity group-hover:opacity-90" />
+                    <div className="absolute bottom-0 left-0 right-0 p-8 transform translate-y-2 group-hover:translate-y-0 transition-transform">
+                      <h3 className="text-2xl font-heading font-bold text-primary mb-2">{p.title}</h3>
+                      <p className="text-sm text-primary/70 line-clamp-2">{p.description}</p>
+                    </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
+                );
+              })}
+            </div>
+            <div className="mt-10 flex justify-center md:justify-end">
+              <button
+                onClick={() => { window.location.hash = '#/gallery'; }}
+                className="flex items-center gap-2 text-accent hover:text-accent/80 font-sans font-medium transition-colors group"
+              >
+                عرض كل المشاريع
+                <MoveRight className="w-4 h-4 group-hover:-translate-x-1 transition-transform rotate-180" />
+              </button>
+            </div>
+          </>
         )}
       </div>
     </section>
@@ -760,6 +761,7 @@ const GalleryPage = () => {
           العودة للرئيسية
         </button>
         <div className="font-heading font-bold text-xl tracking-wide flex items-center gap-2">
+          <img src="/download.png" alt="Pitch Pine" className="h-10 w-auto object-contain" />
           <span className="text-accent">|</span> PITCH PINE
         </div>
       </header>
@@ -877,6 +879,7 @@ const ProjectPage = ({ projectId }) => {
           العودة للمعرض
         </button>
         <div className="font-heading font-bold text-xl tracking-wide flex items-center gap-2">
+          <img src="/download.png" alt="Pitch Pine" className="h-10 w-auto object-contain" />
           <span className="text-accent">|</span> PITCH PINE
         </div>
       </header>
@@ -888,7 +891,7 @@ const ProjectPage = ({ projectId }) => {
           <div className="text-right mb-10">
             <h1 className="text-4xl md:text-5xl font-heading font-bold text-primary mb-3">{project.title}</h1>
             {project.description && (
-              <p className="text-primary/60 font-sans max-w-2xl mr-0 ml-auto leading-relaxed">{project.description}</p>
+              <p className="text-primary/60 font-sans max-w-2xl mr-0 ml-auto leading-relaxed mt-8">{project.description}</p>
             )}
             <div className="w-20 h-1 bg-gradient-to-l from-accent to-transparent mr-0 ml-auto mt-4" />
           </div>
@@ -938,8 +941,8 @@ const ProjectPage = ({ projectId }) => {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center mt-12">
-            <MagneticButton className="text-base px-10 py-4">
-              احجز استشارة <PhoneCall size={18} className="mr-2" />
+            <MagneticButton className="text-base px-10 py-4" onClick={() => window.location.href = 'tel:+201017781162'}>
+              احجز استشارتك الآن <PhoneCall size={18} className="mr-2" />
             </MagneticButton>
             <MagneticButton
               variant="outline"
