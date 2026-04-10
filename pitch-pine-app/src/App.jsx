@@ -98,9 +98,14 @@ const Navbar = () => {
 };
 
 // Hero
+const FRAME_COUNT = 67;
+const FRAME_PATH = (i) => `/frames/${String(i).padStart(4, '0')}.jpg`;
+
 const Hero = () => {
   const heroRef = useRef(null);
-  const videoRef = useRef(null);
+  const canvasRef = useRef(null);
+  const framesRef = useRef([]);
+  const currentFrameRef = useRef(0);
 
   useEffect(() => {
     let ctx = gsap.context(() => {
@@ -116,55 +121,81 @@ const Hero = () => {
     return () => ctx.revert();
   }, []);
 
-  // Scroll-driven video playback with smooth lerp
+  // Preload all frames then drive canvas with ScrollTrigger
   useEffect(() => {
-    const video = videoRef.current;
+    const canvas = canvasRef.current;
     const section = heroRef.current;
-    if (!video || !section) return;
+    if (!canvas || !section) return;
 
-    video.pause();
+    const ctx2d = canvas.getContext('2d');
+    const images = new Array(FRAME_COUNT);
+    let loaded = 0;
 
-    let targetTime = 0;
-    let currentTime = 0;
-    let rafId;
-
-    const handleScroll = () => {
-      const rect = section.getBoundingClientRect();
-      const scrollableHeight = section.offsetHeight - window.innerHeight;
-      const progress = Math.min(1, Math.max(0, -rect.top / scrollableHeight));
-      if (video.duration) {
-        targetTime = progress * video.duration;
-      }
+    const drawFrame = (index) => {
+      const img = images[index];
+      if (!img || !img.complete) return;
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+      // cover fit
+      const scale = Math.max(canvas.width / img.naturalWidth, canvas.height / img.naturalHeight);
+      const w = img.naturalWidth * scale;
+      const h = img.naturalHeight * scale;
+      const x = (canvas.width - w) / 2;
+      const y = (canvas.height - h) / 2;
+      ctx2d.drawImage(img, x, y, w, h);
     };
 
-    const smoothUpdate = () => {
-      currentTime += (targetTime - currentTime) * 0.12;
-      if (Math.abs(currentTime - targetTime) > 0.01) {
-        video.currentTime = currentTime;
-      }
-      rafId = requestAnimationFrame(smoothUpdate);
+    let trigger;
+
+    const setupScrollTrigger = () => {
+      trigger = ScrollTrigger.create({
+        trigger: section,
+        start: 'top top',
+        end: 'bottom bottom',
+        scrub: true,
+        onUpdate(self) {
+          const frame = Math.min(FRAME_COUNT - 1, Math.floor(self.progress * FRAME_COUNT));
+          if (frame !== currentFrameRef.current) {
+            currentFrameRef.current = frame;
+            drawFrame(frame);
+          }
+        },
+      });
     };
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    rafId = requestAnimationFrame(smoothUpdate);
+    const onAllLoaded = () => {
+      framesRef.current = images;
+      drawFrame(0);
+      setupScrollTrigger();
+    };
+
+    // Load all frames
+    for (let i = 0; i < FRAME_COUNT; i++) {
+      const img = new Image();
+      img.src = FRAME_PATH(i + 1);
+      img.onload = () => {
+        loaded++;
+        if (loaded === FRAME_COUNT) onAllLoaded();
+      };
+      img.onerror = () => {
+        loaded++;
+        if (loaded === FRAME_COUNT) onAllLoaded();
+      };
+      images[i] = img;
+    }
 
     return () => {
-      window.removeEventListener('scroll', handleScroll);
-      cancelAnimationFrame(rafId);
+      trigger?.kill();
     };
   }, []);
 
   return (
-    <section ref={heroRef} className="relative" style={{ height: '120vh' }}>
+    <section ref={heroRef} className="relative" style={{ height: '280vh' }}>
       <div className="sticky top-0 h-[100dvh] flex items-end pb-8 lg:pb-12 px-6 lg:px-24 overflow-hidden">
-        {/* Background Video */}
-        <video
-          ref={videoRef}
-          src="/kitchen-assembly.mp4"
-          muted
-          playsInline
-          preload="auto"
-          className="absolute inset-0 w-full h-full object-cover z-0 opacity-50"
+        {/* Canvas image sequence (replaces video) */}
+        <canvas
+          ref={canvasRef}
+          className="absolute inset-0 w-full h-full z-0 opacity-50"
         />
         {/* Heavy gradient overlay */}
         <div className="absolute inset-0 z-[1] bg-gradient-to-t from-background via-background/60 to-transparent" />
@@ -174,7 +205,7 @@ const Hero = () => {
             <span className="hero-text text-2xl md:text-3xl lg:text-4xl font-heading font-bold text-primary/80 block">
               بتش باين هي
             </span>
-            <span className="hero-text text-6xl md:text-[5.5rem] lg:text-[6.5rem] font-drama font-bold text-transparent bg-clip-text bg-gradient-to-br from-[#F4EFE6] via-[#D48C46] to-[#8A5A29] leading-[1.2] pt-2 pb-6 block pl-0 drop-shadow-sm">
+            <span className="hero-text text-6xl md:text-[5.5rem] lg:pb-12 xl:text-[6.5rem] font-drama font-bold text-transparent bg-clip-text bg-gradient-to-br from-[#F4EFE6] via-[#D48C46] to-[#8A5A29] leading-[1.2] pt-2 block pl-0 drop-shadow-sm">
               الفخامة المطلقة في عالم المطابخ.
             </span>
           </h1>
@@ -688,21 +719,21 @@ const GallerySection = () => {
           <div className="h-64 flex flex-col items-center justify-center border border-primary/5 rounded-[2rem] bg-surface/50 text-center p-6">
             <ImageIcon className="w-12 h-12 text-primary/20 mb-4" />
             <h3 className="text-xl font-heading text-primary/60 mb-2">معرض الأعمال قيد التجهيز</h3>
-            <p className="text-sm border text-primary/40 p-2 rounded max-w-sm" style={{borderColor: 'rgba(212, 140, 70, 0.4)'}}>سنقوم بنشر أحدث مشاريعنا المكتملة هنا قريباً.</p>
+            <p className="text-sm border text-primary/40 p-2 rounded max-w-sm" style={{ borderColor: 'rgba(212, 140, 70, 0.4)' }}>سنقوم بنشر أحدث مشاريعنا المكتملة هنا قريباً.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {projects.map((p) => {
               const coverImage = p.images && p.images.length > 0 ? p.images[p.cover_index || 0] : 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?q=80&w=2070&auto=format&fit=crop';
               return (
-                <div 
-                  key={p.id} 
+                <div
+                  key={p.id}
                   onClick={() => openLightbox(p)}
                   className="group relative cursor-pointer h-80 rounded-[2rem] overflow-hidden border border-primary/10 shadow-xl"
                 >
-                  <img 
-                    src={coverImage} 
-                    alt={p.title} 
+                  <img
+                    src={coverImage}
+                    alt={p.title}
                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent transition-opacity group-hover:opacity-90" />
@@ -723,7 +754,7 @@ const GallerySection = () => {
           <button onClick={closeLightbox} className="absolute top-6 right-6 p-2 bg-white/10 rounded-full text-white hover:bg-white/20 transition-colors z-50">
             <X className="w-6 h-6" />
           </button>
-          
+
           <div className="relative w-full max-w-5xl h-[80vh] flex items-center justify-center p-4">
             {selectedProject.images && selectedProject.images.length > 1 && (
               <>
@@ -735,10 +766,10 @@ const GallerySection = () => {
                 </button>
               </>
             )}
-            
-            <img 
-              src={selectedProject.images[photoIndex]} 
-              alt={selectedProject.title} 
+
+            <img
+              src={selectedProject.images[photoIndex]}
+              alt={selectedProject.title}
               className="max-w-full max-h-full object-contain rounded-xl shadow-2xl"
               onClick={e => e.stopPropagation()}
             />
