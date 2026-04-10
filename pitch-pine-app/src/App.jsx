@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { MousePointer2, CheckCircle2, ChevronDown, MoveRight, PhoneCall, X, ChevronLeft, ChevronRight, Image as ImageIcon } from 'lucide-react';
+import { MousePointer2, CheckCircle2, ChevronDown, MoveRight, PhoneCall, ChevronLeft, ChevronRight, Image as ImageIcon } from 'lucide-react';
 import clsx from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { supabase } from './supabase';
@@ -86,9 +86,16 @@ const Navbar = () => {
         </div>
       </div>
       <nav className="hidden md:flex gap-8 font-sans font-medium text-sm">
-        {['الخدمات', 'الفلسفة', 'المراحل'].map((item) => (
+        {['الفلسفة', 'المراحل'].map((item) => (
           <a key={item} href={`#${item}`} className="hover:text-accent transition-colors hover:-translate-y-[1px] inline-block">{item}</a>
         ))}
+        <a
+          href="#/gallery"
+          onClick={(e) => { e.preventDefault(); window.location.hash = '#/gallery'; }}
+          className="hover:text-accent transition-colors hover:-translate-y-[1px] inline-block"
+        >
+          معرض الأعمال
+        </a>
       </nav>
       <MagneticButton className="hidden md:flex py-2 px-5 text-sm" variant="outline">
         احجز استشارة <PhoneCall size={16} />
@@ -507,7 +514,7 @@ const Protocol = () => {
   }, []);
 
   return (
-    <section id="المراحل" ref={containerRef} className="bg-background relative pt-24 pb-32">
+    <section id="المراحل" ref={containerRef} className="bg-background relative pt-24">
       <div className="px-6 lg:px-24 w-full text-center md:text-right mb-16">
         <h2 className="text-4xl font-heading font-bold text-primary">مراحل التنفيذ</h2>
       </div>
@@ -583,7 +590,7 @@ const Waveform = () => {
 // CTA / Pricing (Adapted as "Get Started")
 const GetStarted = () => {
   return (
-    <section className="py-32 px-6 lg:px-24 bg-background">
+    <section className="py-12 px-6 lg:px-24 bg-background">
       <div className="max-w-5xl mx-auto text-center border p-12 lg:p-24 border-primary/10 rounded-[3rem] bg-gradient-to-b from-surface to-background relative overflow-hidden group">
         <div className="absolute inset-0 bg-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
         <h2 className="text-4xl lg:text-5xl font-heading font-bold text-primary mb-6 relative z-10">هل أنت مستعد لمطبخ أحلامك؟</h2>
@@ -648,8 +655,6 @@ const Footer = () => {
 const GallerySection = () => {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selectedProject, setSelectedProject] = useState(null);
-  const [photoIndex, setPhotoIndex] = useState(0);
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -658,43 +663,14 @@ const GallerySection = () => {
         .select('*')
         .order('created_at', { ascending: false })
         .limit(4);
-
-      if (!error && data) {
-        setProjects(data);
-      }
+      if (!error && data) setProjects(data);
       setLoading(false);
     };
-
     fetchProjects();
   }, []);
 
-  const openLightbox = (project) => {
-    setSelectedProject(project);
-    setPhotoIndex(project.cover_index || 0);
-    document.body.style.overflow = 'hidden';
-  };
-
-  const closeLightbox = () => {
-    setSelectedProject(null);
-    document.body.style.overflow = 'auto';
-  };
-
-  const nextPhoto = (e) => {
-    e.stopPropagation();
-    if (selectedProject && selectedProject.images) {
-      setPhotoIndex((prev) => (prev + 1) % selectedProject.images.length);
-    }
-  };
-
-  const prevPhoto = (e) => {
-    e.stopPropagation();
-    if (selectedProject && selectedProject.images) {
-      setPhotoIndex((prev) => (prev - 1 + selectedProject.images.length) % selectedProject.images.length);
-    }
-  };
-
   return (
-    <section id="أعمالنا" className="relative py-32 px-6 lg:px-24">
+    <section id="أعمالنا" className="relative pb-32 px-6 lg:px-24">
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
         <div>
           <h2 className="text-4xl md:text-5xl font-heading font-bold text-primary mb-4">أعمالنا</h2>
@@ -703,7 +679,10 @@ const GallerySection = () => {
           </p>
         </div>
         {!loading && projects.length > 0 && (
-          <button className="flex items-center gap-2 text-accent hover:text-accent/80 font-sans font-medium transition-colors group">
+          <button
+            onClick={() => { window.location.hash = '#/gallery'; }}
+            className="flex items-center gap-2 text-accent hover:text-accent/80 font-sans font-medium transition-colors group"
+          >
             عرض كل المشاريع
             <MoveRight className="w-4 h-4 group-hover:-translate-x-1 transition-transform rotate-180" />
           </button>
@@ -728,7 +707,7 @@ const GallerySection = () => {
               return (
                 <div
                   key={p.id}
-                  onClick={() => openLightbox(p)}
+                  onClick={() => { window.location.hash = `#/project/${p.id}`; }}
                   className="group relative cursor-pointer h-80 rounded-[2rem] overflow-hidden border border-primary/10 shadow-xl"
                 >
                   <img
@@ -747,45 +726,233 @@ const GallerySection = () => {
           </div>
         )}
       </div>
-
-      {/* Lightbox */}
-      {selectedProject && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-sm" onClick={closeLightbox}>
-          <button onClick={closeLightbox} className="absolute top-6 right-6 p-2 bg-white/10 rounded-full text-white hover:bg-white/20 transition-colors z-50">
-            <X className="w-6 h-6" />
-          </button>
-
-          <div className="relative w-full max-w-5xl h-[80vh] flex items-center justify-center p-4">
-            {selectedProject.images && selectedProject.images.length > 1 && (
-              <>
-                <button onClick={prevPhoto} className="absolute left-8 p-3 bg-white/10 rounded-full text-white hover:bg-white/20 transition-colors backdrop-blur-md z-40">
-                  <ChevronLeft className="w-8 h-8" />
-                </button>
-                <button onClick={nextPhoto} className="absolute right-8 p-3 bg-white/10 rounded-full text-white hover:bg-white/20 transition-colors backdrop-blur-md z-40">
-                  <ChevronRight className="w-8 h-8" />
-                </button>
-              </>
-            )}
-
-            <img
-              src={selectedProject.images[photoIndex]}
-              alt={selectedProject.title}
-              className="max-w-full max-h-full object-contain rounded-xl shadow-2xl"
-              onClick={e => e.stopPropagation()}
-            />
-
-            <div className="absolute bottom-6 left-0 right-0 text-center pointer-events-none p-4">
-              <div className="inline-block bg-background/80 backdrop-blur-md border border-primary/20 px-6 py-3 rounded-2xl pointer-events-auto">
-                <h4 className="text-lg font-heading font-bold text-primary mb-1">{selectedProject.title}</h4>
-                {selectedProject.images && selectedProject.images.length > 1 && (
-                  <p className="text-xs font-mono text-accent">{photoIndex + 1} / {selectedProject.images.length}</p>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </section>
+  );
+};
+
+// Full Gallery Page
+const GalleryPage = () => {
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      const { data, error } = await supabase
+        .from('projects')
+        .select('*')
+        .order('created_at', { ascending: false });
+      if (!error && data) setProjects(data);
+      setLoading(false);
+    };
+    fetchProjects();
+  }, []);
+
+  return (
+    <div className="min-h-screen bg-background relative text-primary selection:bg-accent/30 selection:text-white">
+      <div className="noise-overlay" />
+
+      <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-xl border-b border-primary/10 px-6 lg:px-24 py-5 flex items-center justify-between">
+        <button
+          onClick={() => { window.location.hash = '#/'; }}
+          className="flex items-center gap-2 text-primary/70 hover:text-accent transition-colors font-sans font-medium text-sm"
+        >
+          <ChevronRight className="w-4 h-4" />
+          العودة للرئيسية
+        </button>
+        <div className="font-heading font-bold text-xl tracking-wide flex items-center gap-2">
+          <span className="text-accent">|</span> PITCH PINE
+        </div>
+      </header>
+
+      <main className="pt-32 pb-24 px-6 lg:px-24">
+        <div className="max-w-6xl mx-auto mb-16 text-right">
+          <h1 className="text-5xl md:text-6xl font-heading font-bold text-primary mb-4">معرض أعمالنا</h1>
+          <div className="w-24 h-1 bg-gradient-to-l from-accent to-transparent mr-0 ml-auto mb-6" />
+          <p className="text-primary/60 font-sans max-w-xl mr-0 ml-auto leading-relaxed">
+            تصفح مجموعتنا الكاملة من المشاريع المنجزة — كل مطبخ قصة فريدة من الحرفية والذوق الرفيع.
+          </p>
+        </div>
+
+        <div className="max-w-6xl mx-auto">
+          {loading ? (
+            <div className="h-64 flex items-center justify-center">
+              <div className="w-8 h-8 rounded-full border-2 border-accent border-t-transparent animate-spin" />
+            </div>
+          ) : projects.length === 0 ? (
+            <div className="h-64 flex flex-col items-center justify-center border border-primary/5 rounded-[2rem] bg-surface/50 text-center p-6">
+              <ImageIcon className="w-12 h-12 text-primary/20 mb-4" />
+              <h3 className="text-xl font-heading text-primary/60 mb-2">معرض الأعمال قيد التجهيز</h3>
+              <p className="text-sm border text-primary/40 p-2 rounded max-w-sm" style={{ borderColor: 'rgba(212, 140, 70, 0.4)' }}>سنقوم بنشر أحدث مشاريعنا المكتملة هنا قريباً.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {projects.map((p) => {
+                const coverImage = p.images && p.images.length > 0
+                  ? p.images[p.cover_index || 0]
+                  : 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?q=80&w=2070&auto=format&fit=crop';
+                return (
+                  <div
+                    key={p.id}
+                    onClick={() => { window.location.hash = `#/project/${p.id}`; }}
+                    className="group relative cursor-pointer h-80 rounded-[2rem] overflow-hidden border border-primary/10 shadow-xl"
+                  >
+                    <img
+                      src={coverImage}
+                      alt={p.title}
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent transition-opacity group-hover:opacity-90" />
+                    <div className="absolute bottom-0 left-0 right-0 p-6 transform translate-y-2 group-hover:translate-y-0 transition-transform text-right">
+                      <h3 className="text-xl font-heading font-bold text-primary mb-1">{p.title}</h3>
+                      <p className="text-sm text-primary/70 line-clamp-2">{p.description}</p>
+                      {p.images && p.images.length > 1 && (
+                        <span className="text-xs font-mono text-accent mt-1 inline-block">{p.images.length} صورة</span>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      </main>
+    </div>
+  );
+};
+
+// Single Project Page
+const ProjectPage = ({ projectId }) => {
+  const [project, setProject] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [photoIndex, setPhotoIndex] = useState(0);
+
+  useEffect(() => {
+    const fetchProject = async () => {
+      const { data, error } = await supabase
+        .from('projects')
+        .select('*')
+        .eq('id', projectId)
+        .single();
+      if (!error && data) {
+        setProject(data);
+        setPhotoIndex(data.cover_index || 0);
+      }
+      setLoading(false);
+    };
+    fetchProject();
+  }, [projectId]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="w-8 h-8 rounded-full border-2 border-accent border-t-transparent animate-spin" />
+      </div>
+    );
+  }
+
+  if (!project) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center gap-4 text-primary">
+        <p className="font-heading text-2xl">المشروع غير موجود</p>
+        <button onClick={() => { window.location.hash = '#/'; }} className="text-accent hover:underline font-sans">العودة للرئيسية</button>
+      </div>
+    );
+  }
+
+  const images = project.images || [];
+  const prev = () => setPhotoIndex((i) => (i - 1 + images.length) % images.length);
+  const next = () => setPhotoIndex((i) => (i + 1) % images.length);
+
+  return (
+    <div className="min-h-screen bg-background relative text-primary selection:bg-accent/30 selection:text-white">
+      <div className="noise-overlay" />
+
+      {/* Header */}
+      <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-xl border-b border-primary/10 px-6 lg:px-24 py-5 flex items-center justify-between">
+        <button
+          onClick={() => { window.location.hash = '#/gallery'; }}
+          className="flex items-center gap-2 text-primary/70 hover:text-accent transition-colors font-sans font-medium text-sm"
+        >
+          <ChevronRight className="w-4 h-4" />
+          العودة للمعرض
+        </button>
+        <div className="font-heading font-bold text-xl tracking-wide flex items-center gap-2">
+          <span className="text-accent">|</span> PITCH PINE
+        </div>
+      </header>
+
+      <main className="pt-28 pb-24 px-6 lg:px-24">
+        <div className="max-w-5xl mx-auto">
+
+          {/* Title */}
+          <div className="text-right mb-10">
+            <h1 className="text-4xl md:text-5xl font-heading font-bold text-primary mb-3">{project.title}</h1>
+            {project.description && (
+              <p className="text-primary/60 font-sans max-w-2xl mr-0 ml-auto leading-relaxed">{project.description}</p>
+            )}
+            <div className="w-20 h-1 bg-gradient-to-l from-accent to-transparent mr-0 ml-auto mt-4" />
+          </div>
+
+          {/* Main image viewer */}
+          {images.length > 0 ? (
+            <div className="relative rounded-[2rem] overflow-hidden border border-primary/10 shadow-2xl bg-surface mb-4" style={{ aspectRatio: '16/9' }}>
+              <img
+                key={photoIndex}
+                src={images[photoIndex]}
+                alt={`${project.title} - ${photoIndex + 1}`}
+                className="w-full h-full object-cover"
+              />
+              {images.length > 1 && (
+                <>
+                  <button onClick={prev} className="absolute right-4 top-1/2 -translate-y-1/2 p-3 bg-background/60 hover:bg-background/90 backdrop-blur-md rounded-full text-primary transition-colors">
+                    <ChevronRight className="w-6 h-6" />
+                  </button>
+                  <button onClick={next} className="absolute left-4 top-1/2 -translate-y-1/2 p-3 bg-background/60 hover:bg-background/90 backdrop-blur-md rounded-full text-primary transition-colors">
+                    <ChevronLeft className="w-6 h-6" />
+                  </button>
+                  <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-background/70 backdrop-blur-md px-4 py-1.5 rounded-full font-mono text-xs text-accent">
+                    {photoIndex + 1} / {images.length}
+                  </div>
+                </>
+              )}
+            </div>
+          ) : null}
+
+          {/* Thumbnail strip */}
+          {images.length > 1 && (
+            <div className="flex gap-3 overflow-x-auto pb-2 mb-10">
+              {images.map((src, i) => (
+                <button
+                  key={i}
+                  onClick={() => setPhotoIndex(i)}
+                  className={cn(
+                    "flex-shrink-0 w-20 h-20 rounded-xl overflow-hidden border-2 transition-all",
+                    i === photoIndex ? "border-accent scale-105" : "border-primary/10 opacity-60 hover:opacity-100"
+                  )}
+                >
+                  <img src={src} alt="" className="w-full h-full object-cover" />
+                </button>
+              ))}
+            </div>
+          )}
+
+          {/* CTA Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mt-12">
+            <MagneticButton className="text-base px-10 py-4">
+              احجز استشارة <PhoneCall size={18} className="mr-2" />
+            </MagneticButton>
+            <MagneticButton
+              variant="outline"
+              className="text-base px-10 py-4"
+              onClick={() => { window.location.hash = '#/'; }}
+            >
+              العودة للرئيسية <MoveRight size={18} className="mr-2 rotate-180" />
+            </MagneticButton>
+          </div>
+
+        </div>
+      </main>
+    </div>
   );
 };
 
@@ -822,6 +989,15 @@ export default function App() {
 
   if (currentRoute.startsWith('#/admin')) {
     return <AdminGallery />;
+  }
+
+  if (currentRoute.startsWith('#/gallery')) {
+    return <GalleryPage />;
+  }
+
+  if (currentRoute.startsWith('#/project/')) {
+    const projectId = currentRoute.replace('#/project/', '');
+    return <ProjectPage projectId={projectId} />;
   }
 
   return <MainLanding />;
