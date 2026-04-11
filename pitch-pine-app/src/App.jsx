@@ -81,7 +81,7 @@ const Navbar = () => {
     >
       <div className="flex items-center gap-3">
         <div className="font-heading font-bold text-xl tracking-wide flex items-center gap-2">
-          <img src="/download.png" alt="Pitch Pine" className="h-10 w-auto object-contain" />
+          <img src="/download.png" alt="بتش باين - مطابخ فاخرة في بني سويف" className="h-10 w-auto object-contain" />
           <span className="text-accent">|</span> PITCH PINE
         </div>
       </div>
@@ -218,7 +218,7 @@ const Hero = () => {
           </h1>
           <div className="hero-text w-24 h-1 bg-gradient-to-l from-accent to-transparent ml-auto mb-6"></div>
           <p className="hero-text text-lg lg:text-2xl text-primary/70 font-sans max-w-2xl ml-auto leading-relaxed">
-            نصنع مطابخ استثنائية تمزج بين الحرفية الرفيعة والتصميم المبتكر لتلائم ذوقك الرفيع.
+            نصنع مطابخ استثنائية في بني سويف تمزج بين الحرفية الرفيعة والتصميم المبتكر لتلائم ذوقك الرفيع.
           </p>
           <div className="hero-text mt-12">
             <MagneticButton className="text-lg" onClick={() => window.location.href = 'tel:+201017781162'}>
@@ -605,6 +605,23 @@ const GetStarted = () => {
   );
 };
 
+// SEO About Section
+const AboutSection = () => {
+  return (
+    <section className="py-16 px-6 lg:px-24 bg-background">
+      <div className="max-w-4xl mx-auto text-center">
+        <h2 className="text-3xl font-heading font-bold text-primary mb-6">أفضل مطابخ في بني سويف</h2>
+        <p className="text-lg text-primary/60 font-sans leading-relaxed mb-4">
+          بتش باين هي الوجهة الأولى لتصميم وتنفيذ المطابخ الفاخرة في بني سويف. نقدم أجود أنواع المطابخ المودرن والكلاسيكية بخامات عالية الجودة وتشطيبات لا مثيل لها. سواء كنت تبحث عن مطبخ بني سويف عصري أو مطابخ بني سويف بتصميم كلاسيكي، فريقنا المتخصص يضمن لك نتيجة تفوق توقعاتك.
+        </p>
+        <p className="text-lg text-primary/60 font-sans leading-relaxed">
+          نخدم عملاءنا في بني سويف والمناطق المجاورة بخبرة سنوات في صناعة المطابخ. من التصميم إلى التركيب، كل خطوة تتم بإتقان وحرفية. تواصل معنا اليوم واحصل على استشارة مجانية لمطبخ أحلامك.
+        </p>
+      </div>
+    </section>
+  );
+};
+
 // Footer
 const Footer = () => {
   return (
@@ -612,11 +629,11 @@ const Footer = () => {
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
         <div className="md:col-span-2">
           <h2 className="text-3xl font-heading font-bold mb-4 flex items-center gap-2">
-            <img src="/download.png" alt="Pitch Pine" className="h-10 w-auto object-contain" />
+            <img src="/download.png" alt="بتش باين - مطابخ فاخرة في بني سويف" className="h-10 w-auto object-contain" />
           <span className="text-accent">|</span> PITCH PINE
           </h2>
           <p className="text-primary/60 font-sans max-w-sm leading-relaxed mb-8">
-            بيتش باين لخدمات الأعمال الخشبية والمطابخ. نفخر بإنتاج تحف فنية بجودة قياسية في بني سويف، مصر لكل مساحة.
+            بتش باين - أفضل مطابخ في بني سويف. نصمم وننفذ مطابخ فاخرة بأجود الخامات وأحدث التصميمات العصرية والكلاسيكية. مطبخ أحلامك يبدأ من هنا في بني سويف، مصر.
           </p>
           <div className="flex items-center gap-3 bg-surface/50 p-4 rounded-2xl w-fit border border-primary/5">
             <div className="w-3 h-3 rounded-full bg-green-500 animate-pulse" />
@@ -703,7 +720,8 @@ const GallerySection = () => {
                   >
                     <img
                       src={coverImage}
-                      alt={p.title}
+                      alt={`${p.title} - مطابخ بتش باين بني سويف`}
+                      loading="lazy"
                       className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent transition-opacity group-hover:opacity-90" />
@@ -761,7 +779,7 @@ const GalleryPage = () => {
           العودة للرئيسية
         </button>
         <div className="font-heading font-bold text-xl tracking-wide flex items-center gap-2">
-          <img src="/download.png" alt="Pitch Pine" className="h-10 w-auto object-contain" />
+          <img src="/download.png" alt="بتش باين - مطابخ فاخرة في بني سويف" className="h-10 w-auto object-contain" />
           <span className="text-accent">|</span> PITCH PINE
         </div>
       </header>
@@ -800,7 +818,8 @@ const GalleryPage = () => {
                   >
                     <img
                       src={coverImage}
-                      alt={p.title}
+                      alt={`${p.title} - مطابخ بتش باين بني سويف`}
+                      loading="lazy"
                       className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent transition-opacity group-hover:opacity-90" />
@@ -879,7 +898,7 @@ const ProjectPage = ({ projectId }) => {
           العودة للمعرض
         </button>
         <div className="font-heading font-bold text-xl tracking-wide flex items-center gap-2">
-          <img src="/download.png" alt="Pitch Pine" className="h-10 w-auto object-contain" />
+          <img src="/download.png" alt="بتش باين - مطابخ فاخرة في بني سويف" className="h-10 w-auto object-contain" />
           <span className="text-accent">|</span> PITCH PINE
         </div>
       </header>
@@ -902,7 +921,7 @@ const ProjectPage = ({ projectId }) => {
               <img
                 key={photoIndex}
                 src={images[photoIndex]}
-                alt={`${project.title} - ${photoIndex + 1}`}
+                alt={`${project.title} - مطابخ بتش باين بني سويف - صورة ${photoIndex + 1}`}
                 className="w-full h-full object-cover"
               />
               {images.length > 1 && (
@@ -933,7 +952,7 @@ const ProjectPage = ({ projectId }) => {
                     i === photoIndex ? "border-accent scale-105" : "border-primary/10 opacity-60 hover:opacity-100"
                   )}
                 >
-                  <img src={src} alt="" className="w-full h-full object-cover" />
+                  <img src={src} alt={`${project.title} - صورة مصغرة ${i + 1}`} loading="lazy" className="w-full h-full object-cover" />
                 </button>
               ))}
             </div>
@@ -971,6 +990,7 @@ const MainLanding = () => {
         <Philosophy />
         <Protocol />
         <GetStarted />
+        <AboutSection />
       </main>
       <Footer />
     </div>
