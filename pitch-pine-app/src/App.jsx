@@ -197,7 +197,7 @@ const Hero = () => {
   }, []);
 
   return (
-    <section ref={heroRef} className="relative" style={{ height: '280vh' }}>
+    <section ref={heroRef} className="relative" style={{ height: '200vh' }}>
       <div className="sticky top-0 h-[100dvh] flex items-end pb-8 lg:pb-12 px-6 lg:px-24 overflow-hidden">
         {/* Canvas image sequence (replaces video) */}
         <canvas
