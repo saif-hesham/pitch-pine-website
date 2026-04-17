@@ -36,3 +36,12 @@
     border: 1px solid rgba(255, 255, 255, 0.05);
   }
 }
+
+/* On tall mobile screens (e.g. iPhone 14 Pro Max), push hero content up
+   so the visual proportion matches shorter phones like iPhone SE.
+   This query fires only on portrait phones ≤639px wide that are ≥750px tall. */
+@media (max-width: 639px) and (min-height: 750px) {
+  .hero-sticky-inner {
+    padding-bottom: 33vh;
+  }
+}

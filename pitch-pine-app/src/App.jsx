@@ -77,11 +77,11 @@ const Navbar = () => {
   return (
     <header
       ref={navRef}
-      className="fixed top-6 left-1/2 -translate-x-1/2 z-50 transition-all duration-500 rounded-full px-6 py-3 w-[90%] max-w-5xl flex items-center justify-between [&.nav-scrolled]:bg-background/80 [&.nav-scrolled]:backdrop-blur-xl [&.nav-scrolled]:border [&.nav-scrolled]:border-primary/10"
+      className="fixed top-4 sm:top-6 left-1/2 -translate-x-1/2 z-50 transition-all duration-500 rounded-full px-3 sm:px-6 py-2 sm:py-3 w-[92%] max-w-5xl flex items-center justify-between [&.nav-scrolled]:bg-background/80 [&.nav-scrolled]:backdrop-blur-xl [&.nav-scrolled]:border [&.nav-scrolled]:border-primary/10"
     >
-      <div className="flex items-center gap-3">
-        <div className="font-heading font-bold text-xl tracking-wide flex items-center gap-2">
-          <img src="/download.png" alt="بتش باين - مطابخ فاخرة في بني سويف" className="h-10 w-auto object-contain" />
+      <div className="flex items-center gap-1.5 sm:gap-3">
+        <div className="font-heading font-bold text-sm sm:text-xl tracking-wide flex items-center gap-1 sm:gap-2">
+          <img src="/download.png" alt="بتش باين - مطابخ فاخرة في بني سويف" className="h-7 sm:h-10 w-auto object-contain" />
           <span className="text-accent">|</span> PITCH PINE
         </div>
       </div>
@@ -96,8 +96,15 @@ const Navbar = () => {
         >
           معرض الأعمال
         </a>
+        <a
+          href="#/contact"
+          onClick={(e) => { e.preventDefault(); window.location.hash = '#/contact'; }}
+          className="hover:text-accent transition-colors hover:-translate-y-[1px] inline-block"
+        >
+          تواصل معنا
+        </a>
       </nav>
-      <MagneticButton className="flex py-2 px-5 text-sm" variant="outline" onClick={() => window.location.href = 'tel:+201017781162'}>
+      <MagneticButton className="flex py-1.5 px-3 sm:py-2 sm:px-5 text-xs sm:text-sm whitespace-nowrap" variant="outline" onClick={() => window.location.href = 'tel:+201017781162'}>
         احجز استشارة <PhoneCall size={16} />
       </MagneticButton>
     </header>
@@ -198,7 +205,7 @@ const Hero = () => {
 
   return (
     <section ref={heroRef} className="relative" style={{ height: '200vh' }}>
-      <div className="sticky top-0 h-[100dvh] flex items-end pb-8 lg:pb-12 px-6 lg:px-24 overflow-hidden">
+      <div className="sticky top-0 h-[100dvh] flex items-end hero-sticky-inner pb-[14vh] sm:pb-8 lg:pb-12 px-4 sm:px-6 lg:px-24 overflow-hidden">
         {/* Canvas image sequence (replaces video) */}
         <canvas
           ref={canvasRef}
@@ -207,20 +214,20 @@ const Hero = () => {
         {/* Heavy gradient overlay */}
         <div className="absolute inset-0 z-[1] bg-gradient-to-t from-background via-background/60 to-transparent" />
 
-        <div className="relative z-10 w-full max-w-5xl pt-24 text-right ml-auto">
-          <h1 className="flex flex-col gap-3">
-            <span className="hero-text text-2xl md:text-3xl lg:text-4xl font-heading font-bold text-primary/80 block">
+        <div className="relative z-10 w-full max-w-5xl pt-20 sm:pt-24 text-right ml-auto">
+          <h1 className="flex flex-col gap-1 sm:gap-3">
+            <span className="hero-text text-base sm:text-2xl md:text-3xl lg:text-4xl font-heading font-bold text-primary/80 block">
               بيتش باين هي
             </span>
-            <span className="hero-text text-6xl md:text-[5.5rem] lg:pb-12 xl:text-[6.5rem] font-drama font-bold text-transparent bg-clip-text bg-gradient-to-br from-[#F4EFE6] via-[#D48C46] to-[#8A5A29] leading-[1.2] pt-2 block pl-0 drop-shadow-sm">
+            <span className="hero-text text-[2.75rem] sm:text-6xl md:text-[5.5rem] lg:pb-12 xl:text-[6.5rem] font-drama font-bold text-transparent bg-clip-text bg-gradient-to-br from-[#F4EFE6] via-[#D48C46] to-[#8A5A29] leading-[1.15] sm:leading-[1.2] pt-1 sm:pt-2 pb-2 sm:pb-0 block drop-shadow-sm">
               الفخامة المطلقة في عالم المطابخ.
             </span>
           </h1>
-          <div className="hero-text w-24 h-1 bg-gradient-to-l from-accent to-transparent ml-auto mb-6"></div>
-          <p className="hero-text text-lg lg:text-2xl text-primary/70 font-sans max-w-2xl ml-auto leading-relaxed">
+          <div className="hero-text w-16 sm:w-24 h-1 bg-gradient-to-l from-accent to-transparent ml-auto mb-4 sm:mb-6"></div>
+          <p className="hero-text text-sm sm:text-lg lg:text-2xl text-primary/70 font-sans max-w-2xl ml-auto leading-relaxed">
             نصنع مطابخ استثنائية في بني سويف تمزج بين الحرفية الرفيعة والتصميم المبتكر لتلائم ذوقك الرفيع.
           </p>
-          <div className="hero-text mt-12">
+          <div className="hero-text mt-6 sm:mt-12">
             <MagneticButton className="text-lg" onClick={() => window.location.href = 'tel:+201017781162'}>
               احجز استشارتك الآن <PhoneCall size={20} className="mr-2" />
             </MagneticButton>
@@ -405,7 +412,7 @@ const Features = () => {
   }, []);
 
   return (
-    <section ref={sectionRef} className="py-24 px-6 lg:px-24 bg-background">
+    <section ref={sectionRef} className="py-12 sm:py-24 px-4 sm:px-6 lg:px-24 bg-background">
       <div className="max-w-6xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="feature-card"><ShufflerCard /></div>
@@ -456,7 +463,7 @@ const Philosophy = () => {
   const part3 = "تُصنع خصيصاً لك، تدوم لأجيال.".split(" ");
 
   return (
-    <section id="الفلسفة" ref={sectionRef} className="relative py-28 px-6 lg:px-24 overflow-hidden bg-dark">
+    <section id="الفلسفة" ref={sectionRef} className="relative py-16 sm:py-28 px-4 sm:px-6 lg:px-24 overflow-hidden bg-dark">
       <div
         className="bg-texture absolute inset-0 z-0 bg-cover bg-center opacity-10"
         style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070&auto=format&fit=crop)', top: '-50px', height: 'calc(100% + 100px)' }}
@@ -467,7 +474,7 @@ const Philosophy = () => {
         <h2 className="text-xl md:text-2xl font-sans text-primary/60 font-medium max-w-2xl leading-relaxed">
           {part1.map((w, i) => <span key={i} className="phil-word inline-block ml-2">{w}</span>)}
         </h2>
-        <div className="text-4xl md:text-5xl lg:text-[5.5rem] font-drama mt-8 leading-[1.35] text-primary drop-shadow-sm flex flex-col gap-1 md:gap-3">
+        <div className="text-3xl sm:text-4xl md:text-5xl lg:text-[5.5rem] font-drama mt-4 sm:mt-8 leading-[1.35] text-primary drop-shadow-sm flex flex-col gap-1 md:gap-3">
           <div>
             {part2.map((w, i) => <span key={'p2' + i} className="phil-word inline-block ml-3">{w}</span>)}
           </div>
@@ -521,11 +528,11 @@ const Protocol = () => {
       <div className="relative flex flex-col gap-8 lg:gap-24">
         {steps.map((step, i) => (
           <div key={i} className="prot-card sticky top-24 w-full min-h-[70vh] flex items-center justify-center px-4 lg:px-24" style={{ zIndex: i + 1 }}>
-            <div className="prot-card-inner bg-surface w-full max-w-6xl p-8 md:p-24 rounded-[3rem] shadow-2xl border border-primary/10 flex flex-col md:flex-row items-center gap-16 justify-between origin-top transition-all">
+            <div className="prot-card-inner bg-surface w-full max-w-6xl p-5 sm:p-8 md:p-24 rounded-[2rem] sm:rounded-[3rem] shadow-2xl border border-primary/10 flex flex-col md:flex-row items-center gap-8 sm:gap-16 justify-between origin-top transition-all">
               <div className="w-full md:w-1/2">
-                <span className="font-mono text-accent text-6xl opacity-50 block mb-6">{step.num}</span>
-                <h3 className="font-heading font-bold text-3xl md:text-4xl text-primary mb-4">{step.title}</h3>
-                <p className="font-sans text-xl text-primary/70 leading-relaxed">{step.desc}</p>
+                <span className="font-mono text-accent text-4xl sm:text-6xl opacity-50 block mb-3 sm:mb-6">{step.num}</span>
+                <h3 className="font-heading font-bold text-2xl sm:text-3xl md:text-4xl text-primary mb-3 sm:mb-4">{step.title}</h3>
+                <p className="font-sans text-base sm:text-xl text-primary/70 leading-relaxed">{step.desc}</p>
               </div>
               <div className="w-full md:w-1/2 flex justify-center items-center h-64 md:h-auto bg-dark/50 rounded-[2rem] p-8 glass-panel border border-primary/5">
                 {<step.Graphic />}
@@ -590,15 +597,15 @@ const Waveform = () => {
 // CTA / Pricing (Adapted as "Get Started")
 const GetStarted = () => {
   return (
-    <section className="py-12 px-6 lg:px-24 bg-background">
-      <div className="max-w-5xl mx-auto text-center border p-12 lg:p-24 border-primary/10 rounded-[3rem] bg-gradient-to-b from-surface to-background relative overflow-hidden group">
+    <section className="py-8 sm:py-12 px-4 sm:px-6 lg:px-24 bg-background">
+      <div className="max-w-5xl mx-auto text-center border p-6 sm:p-12 lg:p-24 border-primary/10 rounded-[2rem] sm:rounded-[3rem] bg-gradient-to-b from-surface to-background relative overflow-hidden group">
         <div className="absolute inset-0 bg-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-        <h2 className="text-4xl lg:text-5xl font-heading font-bold text-primary mb-6 relative z-10">هل أنت مستعد لمطبخ أحلامك؟</h2>
-        <p className="text-xl text-primary/70 font-sans mb-12 max-w-2xl mx-auto relative z-10">
+        <h2 className="text-2xl sm:text-4xl lg:text-5xl font-heading font-bold text-primary mb-4 sm:mb-6 relative z-10">هل أنت مستعد لمطبخ أحلامك؟</h2>
+        <p className="text-base sm:text-xl text-primary/70 font-sans mb-8 sm:mb-12 max-w-2xl mx-auto relative z-10">
           احجز استشارتك الآن ودع خبراء "بيتش باين" يخططون لمساحتك بأعلى معايير الجودة العالمية.
         </p>
-        <MagneticButton className="text-xl py-4 px-12 relative z-10" onClick={() => window.location.href = 'tel:+201017781162'}>
-          احجز استشارتك الآن <PhoneCall className="mr-2" size={24} />
+        <MagneticButton className="text-base sm:text-xl py-3 sm:py-4 px-8 sm:px-12 relative z-10" onClick={() => window.location.href = 'tel:+201017781162'}>
+          احجز استشارتك الآن <PhoneCall className="mr-2" size={20} />
         </MagneticButton>
       </div>
     </section>
@@ -625,7 +632,7 @@ const AboutSection = () => {
 // Footer
 const Footer = () => {
   return (
-    <footer className="bg-[#0A0705] pt-24 pb-12 px-6 lg:px-24 rounded-t-[4rem] text-primary relative z-20">
+    <footer className="bg-[#0A0705] pt-12 sm:pt-24 pb-8 sm:pb-12 px-4 sm:px-6 lg:px-24 rounded-t-[2rem] sm:rounded-t-[4rem] text-primary relative z-20">
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
         <div className="md:col-span-2">
           <h2 className="text-3xl font-heading font-bold mb-4 flex items-center gap-2">
@@ -978,6 +985,137 @@ const ProjectPage = ({ projectId }) => {
   );
 };
 
+// -------------------------------------------------------
+// CONTACT PAGE
+// -------------------------------------------------------
+const ContactPage = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  const contactItems = [
+    {
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-7 h-7">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 0 1-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 4.5v2.25Z" />
+        </svg>
+      ),
+      label: 'الهاتف',
+      value: <span dir="ltr" className="inline-block text-right">010 17781162</span>,
+      href: 'tel:+201017781162',
+      cta: 'اتصل الآن',
+    },
+    {
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-7 h-7">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
+        </svg>
+      ),
+      label: 'البريد الإلكتروني',
+      value: 'hisham.yousef@gmail.com',
+      href: 'mailto:hisham.yousef@gmail.com',
+      cta: 'راسلنا',
+    },
+    {
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-7 h-7">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
+        </svg>
+      ),
+      label: 'العنوان',
+      value: 'بني سويف – شارع الروضة – برج الروضة',
+      href: 'https://maps.app.goo.gl/93oe41pt4Vh1Ev7k7',
+      cta: 'افتح الخريطة',
+    },
+  ];
+
+  return (
+    <div className="min-h-screen bg-background text-primary relative" dir="rtl">
+      <div className="noise-overlay" />
+      <Navbar />
+
+      {/* Hero Banner */}
+      <div className="relative h-[38vh] min-h-[260px] overflow-hidden">
+        <img
+          src="https://images.unsplash.com/photo-1556909172-54557c7e4fb7?w=1600&q=80&auto=format&fit=crop"
+          alt="تواصل مع بتش باين"
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#1A0F0A] via-[#1A0F0A]/60 to-transparent" />
+        <div className="absolute bottom-8 right-0 left-0 px-6 sm:px-10 lg:px-24">
+          <p className="font-sans text-accent/80 text-sm tracking-widest uppercase mb-2">تواصل معنا</p>
+          <h1 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight">
+            نحن هنا
+            <span className="font-drama italic text-accent"> لك.</span>
+          </h1>
+        </div>
+      </div>
+
+      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
+
+        {/* Contact Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-16">
+          {contactItems.map((item) => (
+            <a
+              key={item.label}
+              href={item.href}
+              target={item.href.startsWith('http') ? '_blank' : undefined}
+              rel={item.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+              className="group relative flex flex-col gap-5 p-8 rounded-[2rem] border border-primary/10 bg-primary/5 hover:bg-accent/5 hover:border-accent/30 transition-all duration-300 hover:-translate-y-1"
+            >
+              <div className="text-accent">{item.icon}</div>
+              <div>
+                <p className="font-sans text-xs tracking-widest text-primary/40 uppercase mb-1">{item.label}</p>
+                <p className="font-sans font-semibold text-primary text-base leading-relaxed">{item.value}</p>
+              </div>
+              <span className="mt-auto inline-flex items-center gap-2 text-accent text-sm font-semibold group-hover:gap-3 transition-all">
+                {item.cta}
+                <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none">
+                  <path d="M3.33 8h9.34M8.67 4l4 4-4 4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </span>
+            </a>
+          ))}
+        </div>
+
+        {/* Map Embed */}
+        <div className="rounded-[2.5rem] overflow-hidden border border-primary/10 shadow-2xl" style={{ height: '480px' }}>
+          <iframe
+            title="موقع بتش باين على الخريطة"
+            width="100%"
+            height="100%"
+            style={{ border: 0, filter: 'saturate(0.9) contrast(1.05)' }}
+            loading="lazy"
+            allowFullScreen
+            referrerPolicy="no-referrer-when-downgrade"
+            src="https://maps.google.com/maps?q=29.0662170,31.0987320&hl=ar&z=17&output=embed"
+          />
+        </div>
+
+        {/* Bottom CTA */}
+        <div className="mt-16 text-center">
+          <p className="font-sans text-primary/50 text-sm mb-6">نعمل من السبت إلى الخميس · ٩ ص – ٩ م</p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <MagneticButton className="text-base px-10 py-4" onClick={() => window.location.href = 'tel:+201017781162'}>
+              تحدث معنا الآن <PhoneCall size={18} className="mr-2" />
+            </MagneticButton>
+            <MagneticButton
+              variant="outline"
+              className="text-base px-10 py-4"
+              onClick={() => { window.location.hash = '#/'; }}
+            >
+              العودة للرئيسية <MoveRight size={18} className="mr-2 rotate-180" />
+            </MagneticButton>
+          </div>
+        </div>
+      </main>
+
+      <Footer />
+    </div>
+  );
+};
+
 const MainLanding = () => {
   return (
     <div className="min-h-screen bg-background relative text-primary selection:bg-accent/30 selection:text-white">
@@ -1021,6 +1159,10 @@ export default function App() {
   if (currentRoute.startsWith('#/project/')) {
     const projectId = currentRoute.replace('#/project/', '');
     return <ProjectPage projectId={projectId} />;
+  }
+
+  if (currentRoute.startsWith('#/contact')) {
+    return <ContactPage />;
   }
 
   return <MainLanding />;
