@@ -59,9 +59,78 @@ const MagneticButton = ({ children, className, onClick, variant = 'primary' }) =
   );
 };
 
+// Mobile hamburger dropdown
+const HamburgerMenu = ({ activeRoute }) => {
+  const [open, setOpen] = useState(false);
+  const close = () => setOpen(false);
+  return (
+    <>
+      {/* Hamburger icon button - mobile only */}
+      <button
+        className="md:hidden flex flex-col justify-center items-center w-9 h-9 gap-[5px] rounded-full hover:bg-primary/10 transition-colors"
+        onClick={() => setOpen(!open)}
+        aria-label="فتح القائمة"
+      >
+        <span className={cn('block w-5 h-0.5 bg-primary transition-all duration-300 origin-center', open && 'rotate-45 translate-y-[7px]')} />
+        <span className={cn('block w-5 h-0.5 bg-primary transition-all duration-300', open && 'opacity-0 scale-x-0')} />
+        <span className={cn('block w-5 h-0.5 bg-primary transition-all duration-300 origin-center', open && '-rotate-45 -translate-y-[7px]')} />
+      </button>
+
+      {/* Slide-down panel */}
+      <div
+        className={cn(
+          'fixed left-1/2 -translate-x-1/2 z-40 w-[92%] max-w-5xl md:hidden',
+          'bg-background/95 backdrop-blur-xl border border-primary/10 rounded-[1.5rem] overflow-hidden',
+          'transition-all duration-300 ease-in-out',
+          open ? 'top-[4.2rem] opacity-100 pointer-events-auto' : 'top-[3.5rem] opacity-0 pointer-events-none'
+        )}
+      >
+        <nav className="flex flex-col p-4 gap-1 font-sans font-medium text-base" dir="rtl">
+          <a
+            href="#/gallery"
+            onClick={(e) => { e.preventDefault(); window.location.hash = '#/gallery'; close(); }}
+            className={cn('px-4 py-3.5 rounded-xl transition-colors flex items-center justify-between',
+              activeRoute === '#/gallery' ? 'text-accent bg-accent/5' : 'hover:bg-primary/5')}
+          >
+            <span>معرض الأعمال</span>
+            {activeRoute === '#/gallery' && <span className="w-2 h-2 rounded-full bg-accent" />}
+          </a>
+          <a
+            href="#/contact"
+            onClick={(e) => { e.preventDefault(); window.location.hash = '#/contact'; close(); }}
+            className={cn('px-4 py-3.5 rounded-xl transition-colors flex items-center justify-between',
+              activeRoute === '#/contact' ? 'text-accent bg-accent/5' : 'hover:bg-primary/5')}
+          >
+            <span>تواصل معنا</span>
+            {activeRoute === '#/contact' && <span className="w-2 h-2 rounded-full bg-accent" />}
+          </a>
+          <div className="mt-2 pt-3 border-t border-primary/10">
+            <button
+              onClick={() => { window.location.href = 'tel:+201017781162'; close(); }}
+              className="w-full flex items-center justify-center gap-2 bg-accent text-white font-semibold py-3.5 px-6 rounded-xl hover:bg-accent/90 transition-colors"
+            >
+              احجز استشارة <PhoneCall size={16} />
+            </button>
+          </div>
+        </nav>
+      </div>
+
+      {/* Invisible backdrop to close on outside tap */}
+      {open && <div className="fixed inset-0 z-30 md:hidden" onClick={close} />}
+    </>
+  );
+};
+
 // Navbar: Morphing from transparent to dark blur
 const Navbar = () => {
   const navRef = useRef(null);
+  const [activeRoute, setActiveRoute] = useState(window.location.hash || '#/');
+
+  useEffect(() => {
+    const handleHash = () => setActiveRoute(window.location.hash || '#/');
+    window.addEventListener('hashchange', handleHash);
+    return () => window.removeEventListener('hashchange', handleHash);
+  }, []);
 
   useEffect(() => {
     let ctx = gsap.context(() => {
@@ -74,42 +143,54 @@ const Navbar = () => {
     return () => ctx.revert();
   }, []);
 
+  const navLink = (hash, label) => {
+    const active = activeRoute === hash;
+    return (
+      <a
+        href={hash}
+        onClick={(e) => { e.preventDefault(); window.location.hash = hash; }}
+        className={cn(
+          'transition-colors hover:-translate-y-[1px] inline-block relative pb-0.5',
+          active
+            ? 'text-accent after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:rounded-full after:bg-accent'
+            : 'hover:text-accent'
+        )}
+      >
+        {label}
+      </a>
+    );
+  };
+
   return (
     <header
       ref={navRef}
       className="fixed top-4 sm:top-6 left-1/2 -translate-x-1/2 z-50 transition-all duration-500 rounded-full px-3 sm:px-6 py-2 sm:py-3 w-[92%] max-w-5xl flex items-center justify-between [&.nav-scrolled]:bg-background/80 [&.nav-scrolled]:backdrop-blur-xl [&.nav-scrolled]:border [&.nav-scrolled]:border-primary/10"
     >
       <div className="flex items-center gap-1.5 sm:gap-3">
-        <div className="font-heading font-bold text-sm sm:text-xl tracking-wide flex items-center gap-1 sm:gap-2">
+        <button
+          onClick={() => { window.location.hash = '#/'; }}
+          className="font-heading font-bold text-sm sm:text-xl tracking-wide flex items-center gap-1 sm:gap-2 hover:opacity-80 transition-opacity cursor-pointer"
+        >
           <img src="/download.png" alt="بتش باين - مطابخ فاخرة في بني سويف" className="h-7 sm:h-10 w-auto object-contain" />
           <span className="text-accent">|</span> PITCH PINE
-        </div>
+        </button>
       </div>
+      {/* Desktop nav — hidden on mobile */}
       <nav className="hidden md:flex gap-8 font-sans font-medium text-sm">
-        {['الفلسفة', 'المراحل'].map((item) => (
-          <a key={item} href={`#${item}`} className="hover:text-accent transition-colors hover:-translate-y-[1px] inline-block">{item}</a>
-        ))}
-        <a
-          href="#/gallery"
-          onClick={(e) => { e.preventDefault(); window.location.hash = '#/gallery'; }}
-          className="hover:text-accent transition-colors hover:-translate-y-[1px] inline-block"
-        >
-          معرض الأعمال
-        </a>
-        <a
-          href="#/contact"
-          onClick={(e) => { e.preventDefault(); window.location.hash = '#/contact'; }}
-          className="hover:text-accent transition-colors hover:-translate-y-[1px] inline-block"
-        >
-          تواصل معنا
-        </a>
+        {navLink('#/gallery', 'معرض الأعمال')}
+        {navLink('#/contact', 'تواصل معنا')}
       </nav>
-      <MagneticButton className="flex py-1.5 px-3 sm:py-2 sm:px-5 text-xs sm:text-sm whitespace-nowrap" variant="outline" onClick={() => window.location.href = 'tel:+201017781162'}>
+      {/* Desktop CTA — hidden on mobile */}
+      <MagneticButton className="hidden md:flex py-1.5 px-3 sm:py-2 sm:px-5 text-xs sm:text-sm whitespace-nowrap" variant="outline" onClick={() => window.location.href = 'tel:+201017781162'}>
         احجز استشارة <PhoneCall size={16} />
       </MagneticButton>
+      {/* Mobile hamburger */}
+      <HamburgerMenu activeRoute={activeRoute} />
     </header>
   );
 };
+
+
 
 // Hero
 const FRAME_COUNT = 67;
@@ -642,18 +723,28 @@ const Footer = () => {
           <p className="text-primary/60 font-sans max-w-sm leading-relaxed mb-8">
             بتش باين - أفضل مطابخ في بني سويف. نصمم وننفذ مطابخ فاخرة بأجود الخامات وأحدث التصميمات العصرية والكلاسيكية. مطبخ أحلامك يبدأ من هنا في بني سويف، مصر.
           </p>
-          <div className="flex items-center gap-3 bg-surface/50 p-4 rounded-2xl w-fit border border-primary/5">
-            <div className="w-3 h-3 rounded-full bg-green-500 animate-pulse" />
-            <span className="font-mono text-sm tracking-widest text-primary/80">SYSTEM OPERATIONAL</span>
-          </div>
         </div>
         <div>
           <h4 className="font-heading font-bold text-lg mb-6">الروابط</h4>
           <ul className="space-y-4 font-sans text-primary/70">
-            <li><a href="#" className="hover:text-accent transition-colors">الرئيسية</a></li>
-            <li><a href="#الفلسفة" className="hover:text-accent transition-colors">فلسفتنا</a></li>
-            <li><a href="#المراحل" className="hover:text-accent transition-colors">كيف نعمل</a></li>
-            <li><a href="#" className="hover:text-accent transition-colors">اتصل بنا</a></li>
+            <li>
+              <a
+                href="#/gallery"
+                onClick={(e) => { e.preventDefault(); window.location.hash = '#/gallery'; }}
+                className="hover:text-accent transition-colors"
+              >
+                معرض الأعمال
+              </a>
+            </li>
+            <li>
+              <a
+                href="#/contact"
+                onClick={(e) => { e.preventDefault(); window.location.hash = '#/contact'; }}
+                className="hover:text-accent transition-colors"
+              >
+                تواصل معنا
+              </a>
+            </li>
           </ul>
         </div>
         <div>
@@ -667,10 +758,6 @@ const Footer = () => {
       </div>
       <div className="border-t border-primary/10 pt-8 flex flex-col md:flex-row justify-between items-center text-sm font-sans text-primary/40 max-w-6xl mx-auto">
         <p>&copy; {new Date().getFullYear()} Pitch Pine. جميع الحقوق محفوظة.</p>
-        <div className="flex gap-6 mt-4 md:mt-0">
-          <a href="#" className="hover:text-primary transition-colors">سياسة الخصوصية</a>
-          <a href="#" className="hover:text-primary transition-colors">الشروط والأحكام</a>
-        </div>
       </div>
     </footer>
   );
