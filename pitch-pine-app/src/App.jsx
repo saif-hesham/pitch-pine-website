@@ -1112,7 +1112,7 @@ const ContactPage = () => {
       ),
       label: 'العنوان',
       value: 'بني سويف – شارع الروضة – برج الروضة',
-      href: 'https://maps.app.goo.gl/93oe41pt4Vh1Ev7k7',
+      href: 'https://maps.app.goo.gl/fAP7YgEpr28zkn146',
       cta: 'افتح الخريطة',
     },
   ];
