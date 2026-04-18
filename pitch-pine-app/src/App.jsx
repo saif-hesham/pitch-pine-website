@@ -164,7 +164,7 @@ const Navbar = () => {
   return (
     <header
       ref={navRef}
-      className="fixed top-4 sm:top-6 left-1/2 -translate-x-1/2 z-50 transition-all duration-500 rounded-full px-3 sm:px-6 py-2 sm:py-3 w-[92%] max-w-5xl flex items-center justify-between [&.nav-scrolled]:bg-background/80 [&.nav-scrolled]:backdrop-blur-xl [&.nav-scrolled]:border [&.nav-scrolled]:border-primary/10"
+      className="fixed top-4 sm:top-6 left-1/2 -translate-x-1/2 z-50 transition-all duration-500 rounded-full px-3 sm:px-6 py-2 sm:py-3 w-[92%] max-w-5xl lg:max-w-7xl flex items-center justify-between [&.nav-scrolled]:bg-background/80 [&.nav-scrolled]:backdrop-blur-xl [&.nav-scrolled]:border [&.nav-scrolled]:border-primary/10"
     >
       <div className="flex items-center gap-1.5 sm:gap-3">
         <button
@@ -308,7 +308,14 @@ const Hero = () => {
           <p className="hero-text text-sm sm:text-lg lg:text-2xl text-primary/70 font-sans max-w-2xl ml-auto leading-relaxed">
             نصنع مطابخ استثنائية في بني سويف تمزج بين الحرفية الرفيعة والتصميم المبتكر لتلائم ذوقك الرفيع.
           </p>
-          <div className="hero-text mt-6 sm:mt-12">
+          <div className="hero-text mt-6 sm:mt-12 flex flex-wrap gap-4">
+            <MagneticButton
+              variant="outline"
+              className="text-md"
+              onClick={() => { window.location.hash = '#/gallery'; }}
+            >
+              تصفح معرض الأعمال <MoveRight size={20} className="mr-2 rotate-180" />
+            </MagneticButton>
             <MagneticButton className="text-lg" onClick={() => window.location.href = 'tel:+201017781162'}>
               احجز استشارتك الآن <PhoneCall size={20} className="mr-2" />
             </MagneticButton>
@@ -427,7 +434,7 @@ const SchedulerCard = () => {
         const btnPos = getRelPos(btn);
 
         const tl = gsap.timeline({ repeat: -1, repeatDelay: 1.5 });
-        tl.to(cursor, { x: cellPos.x, y: cellPos.y, duration: 1, ease: 'power2.inOut' })
+        tl.to(cursor, { x: cellPos.x + 12, y: cellPos.y + 12, duration: 1, ease: 'power2.inOut' })
           .to(cursor, { scale: 0.8, duration: 0.1, yoyo: true, repeat: 1 })
           .to(cell, { backgroundColor: 'rgba(212, 140, 70, 0.2)', borderColor: '#D48C46', duration: 0.2, color: '#D48C46' }, '-=0.1')
           .to(cursor, { x: btnPos.x, y: btnPos.y, duration: 0.8, ease: 'power2.inOut', delay: 0.4 })
@@ -456,7 +463,7 @@ const SchedulerCard = () => {
       <div className="relative mt-4 bg-background/50 p-4 rounded-xl border border-primary/5 flex flex-col gap-3 items-center">
         <div className="flex gap-1 xl:gap-2">
           {days.map((d, i) => (
-            <div key={i} ref={i === 2 ? cellRef : null} className={cn("w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center rounded-md border border-primary/10 text-xs font-mono", i === 2 ? "cell-active" : "")}>
+            <div key={i} ref={i === 3 ? cellRef : null} className={cn("w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center rounded-md border border-primary/10 text-xs font-mono", i === 3 ? "cell-active" : "")}>
               {d}
             </div>
           ))}
@@ -718,7 +725,7 @@ const Footer = () => {
         <div className="md:col-span-2">
           <h2 className="text-3xl font-heading font-bold mb-4 flex items-center gap-2">
             <img src="/download.png" alt="بتش باين - مطابخ فاخرة في بني سويف" className="h-10 w-auto object-contain" />
-          <span className="text-accent">|</span> PITCH PINE
+            <span className="text-accent">|</span> PITCH PINE
           </h2>
           <p className="text-primary/60 font-sans max-w-sm leading-relaxed mb-8">
             بتش باين - أفضل مطابخ في بني سويف. نصمم وننفذ مطابخ فاخرة بأجود الخامات وأحدث التصميمات العصرية والكلاسيكية. مطبخ أحلامك يبدأ من هنا في بني سويف، مصر.
@@ -864,21 +871,9 @@ const GalleryPage = () => {
     <div className="min-h-screen bg-background relative text-primary selection:bg-accent/30 selection:text-white">
       <div className="noise-overlay" />
 
-      <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-xl border-b border-primary/10 px-6 lg:px-24 py-5 flex items-center justify-between">
-        <button
-          onClick={() => { window.location.hash = '#/'; }}
-          className="flex items-center gap-2 text-primary/70 hover:text-accent transition-colors font-sans font-medium text-sm"
-        >
-          <ChevronRight className="w-4 h-4" />
-          العودة للرئيسية
-        </button>
-        <div className="font-heading font-bold text-xl tracking-wide flex items-center gap-2">
-          <img src="/download.png" alt="بتش باين - مطابخ فاخرة في بني سويف" className="h-10 w-auto object-contain" />
-          <span className="text-accent">|</span> PITCH PINE
-        </div>
-      </header>
+      <Navbar />
 
-      <main className="pt-32 pb-24 px-6 lg:px-24">
+      <main className="pt-28 pb-24 px-6 lg:px-24 mt-12">
         <div className="max-w-6xl mx-auto mb-16 text-right">
           <h1 className="text-5xl md:text-6xl font-heading font-bold text-primary mb-4">معرض أعمالنا</h1>
           <div className="w-24 h-1 bg-gradient-to-l from-accent to-transparent mr-0 ml-auto mb-6" />
@@ -1182,7 +1177,6 @@ const ContactPage = () => {
 
         {/* Bottom CTA */}
         <div className="mt-16 text-center">
-          <p className="font-sans text-primary/50 text-sm mb-6">نعمل من السبت إلى الخميس · ٩ ص – ٩ م</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <MagneticButton className="text-base px-10 py-4" onClick={() => window.location.href = 'tel:+201017781162'}>
               تحدث معنا الآن <PhoneCall size={18} className="mr-2" />
