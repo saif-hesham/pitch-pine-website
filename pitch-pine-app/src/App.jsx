@@ -420,21 +420,22 @@ const SchedulerCard = () => {
     if (!cursor || !cell || !btn) return;
 
     const getRelPos = (target) => {
-      const cRect = cursor.parentElement.getBoundingClientRect();
+      const cRect = cursor.getBoundingClientRect();
       const tRect = target.getBoundingClientRect();
       return {
-        x: tRect.left + tRect.width / 2 - (cRect.left + cRect.width / 2),
-        y: tRect.top + tRect.height / 2 - (cRect.top + cRect.height / 2)
+        x: tRect.left + tRect.width / 2 - cRect.left,
+        y: tRect.top + tRect.height / 2 - cRect.top
       };
     };
 
     let ctx = gsap.context(() => {
       const buildTimeline = () => {
+        gsap.set(cursor, { x: 0, y: 0 });
         const cellPos = getRelPos(cell);
         const btnPos = getRelPos(btn);
 
         const tl = gsap.timeline({ repeat: -1, repeatDelay: 1.5 });
-        tl.to(cursor, { x: cellPos.x + 12, y: cellPos.y + 12, duration: 1, ease: 'power2.inOut' })
+        tl.to(cursor, { x: cellPos.x, y: cellPos.y, duration: 1, ease: 'power2.inOut' })
           .to(cursor, { scale: 0.8, duration: 0.1, yoyo: true, repeat: 1 })
           .to(cell, { backgroundColor: 'rgba(212, 140, 70, 0.2)', borderColor: '#D48C46', duration: 0.2, color: '#D48C46' }, '-=0.1')
           .to(cursor, { x: btnPos.x, y: btnPos.y, duration: 0.8, ease: 'power2.inOut', delay: 0.4 })
