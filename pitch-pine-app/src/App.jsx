@@ -1,10 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { Routes, Route, Link, useNavigate, useLocation, useParams } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { MousePointer2, MoveRight, PhoneCall, ChevronLeft, ChevronRight, Image as ImageIcon } from 'lucide-react';
 import clsx from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { supabase } from './supabase';
+import { trackEvent } from './analytics';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -60,15 +62,16 @@ const MagneticButton = ({ children, className, onClick, variant = 'primary' }) =
 };
 
 // Mobile hamburger dropdown
-const HamburgerMenu = ({ activeRoute }) => {
+const HamburgerMenu = () => {
   const [open, setOpen] = useState(false);
+  const { pathname } = useLocation();
   const close = () => setOpen(false);
   return (
     <>
       {/* Hamburger icon button - mobile only */}
       <button
         className="md:hidden flex flex-col justify-center items-center w-9 h-9 gap-[5px] rounded-full hover:bg-primary/10 transition-colors"
-        onClick={() => setOpen(!open)}
+        onClick={() => { const next = !open; setOpen(next); if (next) trackEvent('mobile_menu_open'); }}
         aria-label="فتح القائمة"
       >
         <span className={cn('block w-5 h-0.5 bg-primary transition-all duration-300 origin-center', open && 'rotate-45 translate-y-[7px]')} />
@@ -86,27 +89,27 @@ const HamburgerMenu = ({ activeRoute }) => {
         )}
       >
         <nav className="flex flex-col p-4 gap-1 font-sans font-medium text-base" dir="rtl">
-          <a
-            href="#/gallery"
-            onClick={(e) => { e.preventDefault(); window.location.hash = '#/gallery'; close(); }}
+          <Link
+            to="/gallery"
+            onClick={close}
             className={cn('px-4 py-3.5 rounded-xl transition-colors flex items-center justify-between',
-              activeRoute === '#/gallery' ? 'text-accent bg-accent/5' : 'hover:bg-primary/5')}
+              pathname === '/gallery' ? 'text-accent bg-accent/5' : 'hover:bg-primary/5')}
           >
             <span>معرض الأعمال</span>
-            {activeRoute === '#/gallery' && <span className="w-2 h-2 rounded-full bg-accent" />}
-          </a>
-          <a
-            href="#/contact"
-            onClick={(e) => { e.preventDefault(); window.location.hash = '#/contact'; close(); }}
+            {pathname === '/gallery' && <span className="w-2 h-2 rounded-full bg-accent" />}
+          </Link>
+          <Link
+            to="/contact"
+            onClick={close}
             className={cn('px-4 py-3.5 rounded-xl transition-colors flex items-center justify-between',
-              activeRoute === '#/contact' ? 'text-accent bg-accent/5' : 'hover:bg-primary/5')}
+              pathname === '/contact' ? 'text-accent bg-accent/5' : 'hover:bg-primary/5')}
           >
             <span>تواصل معنا</span>
-            {activeRoute === '#/contact' && <span className="w-2 h-2 rounded-full bg-accent" />}
-          </a>
+            {pathname === '/contact' && <span className="w-2 h-2 rounded-full bg-accent" />}
+          </Link>
           <div className="mt-2 pt-3 border-t border-primary/10">
             <button
-              onClick={() => { window.location.href = 'tel:+201017781162'; close(); }}
+              onClick={() => { trackEvent('cta_call_click', { location: 'mobile_menu' }); window.location.href = 'tel:+201017781162'; close(); }}
               className="w-full flex items-center justify-center gap-2 bg-accent text-white font-semibold py-3.5 px-6 rounded-xl hover:bg-accent/90 transition-colors"
             >
               احجز استشارة <PhoneCall size={16} />
@@ -124,13 +127,8 @@ const HamburgerMenu = ({ activeRoute }) => {
 // Navbar: Morphing from transparent to dark blur
 const Navbar = () => {
   const navRef = useRef(null);
-  const [activeRoute, setActiveRoute] = useState(window.location.hash || '#/');
-
-  useEffect(() => {
-    const handleHash = () => setActiveRoute(window.location.hash || '#/');
-    window.addEventListener('hashchange', handleHash);
-    return () => window.removeEventListener('hashchange', handleHash);
-  }, []);
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
 
   useEffect(() => {
     let ctx = gsap.context(() => {
@@ -143,12 +141,11 @@ const Navbar = () => {
     return () => ctx.revert();
   }, []);
 
-  const navLink = (hash, label) => {
-    const active = activeRoute === hash;
+  const navLink = (path, label) => {
+    const active = pathname === path;
     return (
-      <a
-        href={hash}
-        onClick={(e) => { e.preventDefault(); window.location.hash = hash; }}
+      <Link
+        to={path}
         className={cn(
           'transition-colors hover:-translate-y-[1px] inline-block relative pb-0.5',
           active
@@ -157,7 +154,7 @@ const Navbar = () => {
         )}
       >
         {label}
-      </a>
+      </Link>
     );
   };
 
@@ -168,7 +165,7 @@ const Navbar = () => {
     >
       <div className="flex items-center gap-1.5 sm:gap-3">
         <button
-          onClick={() => { window.location.hash = '#/'; }}
+          onClick={() => navigate('/')}
           className="font-heading font-bold text-sm sm:text-xl tracking-wide flex items-center gap-1 sm:gap-2 hover:opacity-80 transition-opacity cursor-pointer"
         >
           <img src="/download.png" alt="بتش باين - مطابخ فاخرة في بني سويف" className="h-7 sm:h-10 w-auto object-contain" />
@@ -177,15 +174,15 @@ const Navbar = () => {
       </div>
       {/* Desktop nav — hidden on mobile */}
       <nav className="hidden md:flex gap-8 font-sans font-medium text-sm">
-        {navLink('#/gallery', 'معرض الأعمال')}
-        {navLink('#/contact', 'تواصل معنا')}
+        {navLink('/gallery', 'معرض الأعمال')}
+        {navLink('/contact', 'تواصل معنا')}
       </nav>
       {/* Desktop CTA — hidden on mobile */}
-      <MagneticButton className="hidden md:flex py-1.5 px-3 sm:py-2 sm:px-5 text-xs sm:text-sm whitespace-nowrap" variant="outline" onClick={() => window.location.href = 'tel:+201017781162'}>
+      <MagneticButton className="hidden md:flex py-1.5 px-3 sm:py-2 sm:px-5 text-xs sm:text-sm whitespace-nowrap" variant="outline" onClick={() => { trackEvent('cta_call_click', { location: 'navbar' }); window.location.href = 'tel:+201017781162'; }}>
         احجز استشارة <PhoneCall size={16} />
       </MagneticButton>
       {/* Mobile hamburger */}
-      <HamburgerMenu activeRoute={activeRoute} />
+      <HamburgerMenu />
     </header>
   );
 };
@@ -201,6 +198,7 @@ const Hero = () => {
   const canvasRef = useRef(null);
   const framesRef = useRef([]);
   const currentFrameRef = useRef(0);
+  const navigate = useNavigate();
 
   useEffect(() => {
     let ctx = gsap.context(() => {
@@ -312,11 +310,11 @@ const Hero = () => {
             <MagneticButton
               variant="outline"
               className="text-md"
-              onClick={() => { window.location.hash = '#/gallery'; }}
+              onClick={() => { trackEvent('gallery_cta_click', { location: 'hero' }); navigate('/gallery'); }}
             >
               تصفح معرض الأعمال <MoveRight size={20} className="mr-2 rotate-180" />
             </MagneticButton>
-            <MagneticButton className="text-lg" onClick={() => window.location.href = 'tel:+201017781162'}>
+            <MagneticButton className="text-lg" onClick={() => { trackEvent('cta_call_click', { location: 'hero' }); window.location.href = 'tel:+201017781162'; }}>
               احجز استشارتك الآن <PhoneCall size={20} className="mr-2" />
             </MagneticButton>
           </div>
@@ -693,7 +691,7 @@ const GetStarted = () => {
         <p className="text-base sm:text-xl text-primary/70 font-sans mb-8 sm:mb-12 max-w-2xl mx-auto relative z-10">
           احجز استشارتك الآن ودع خبراء "بيتش باين" يخططون لمساحتك بأعلى معايير الجودة العالمية.
         </p>
-        <MagneticButton className="text-base sm:text-xl py-3 sm:py-4 px-8 sm:px-12 relative z-10" onClick={() => window.location.href = 'tel:+201017781162'}>
+        <MagneticButton className="text-base sm:text-xl py-3 sm:py-4 px-8 sm:px-12 relative z-10" onClick={() => { trackEvent('cta_call_click', { location: 'get_started_section' }); window.location.href = 'tel:+201017781162'; }}>
           احجز استشارتك الآن <PhoneCall className="mr-2" size={20} />
         </MagneticButton>
       </div>
@@ -736,22 +734,14 @@ const Footer = () => {
           <h4 className="font-heading font-bold text-lg mb-6">الروابط</h4>
           <ul className="space-y-4 font-sans text-primary/70">
             <li>
-              <a
-                href="#/gallery"
-                onClick={(e) => { e.preventDefault(); window.location.hash = '#/gallery'; }}
-                className="hover:text-accent transition-colors"
-              >
+              <Link to="/gallery" className="hover:text-accent transition-colors">
                 معرض الأعمال
-              </a>
+              </Link>
             </li>
             <li>
-              <a
-                href="#/contact"
-                onClick={(e) => { e.preventDefault(); window.location.hash = '#/contact'; }}
-                className="hover:text-accent transition-colors"
-              >
+              <Link to="/contact" className="hover:text-accent transition-colors">
                 تواصل معنا
-              </a>
+              </Link>
             </li>
           </ul>
         </div>
@@ -759,7 +749,7 @@ const Footer = () => {
           <h4 className="font-heading font-bold text-lg mb-6">تواصل معنا</h4>
           <ul className="space-y-4 font-sans text-primary/70">
             <li className="leading-relaxed">بني سويف - شارع الروضة - برج الروضة - أمام نهاية سور مدرسة الثانوية العسكرية</li>
-            <li dir="ltr" className="text-right"><a href="tel:+201017781162" className="hover:text-accent transition-colors">010 17781162</a></li>
+            <li dir="ltr" className="text-right"><a href="tel:+201017781162" onClick={() => trackEvent('cta_call_click', { location: 'footer' })} className="hover:text-accent transition-colors">010 17781162</a></li>
             <li>hisham.yousef@gmail.com</li>
           </ul>
         </div>
@@ -775,6 +765,7 @@ const Footer = () => {
 const GallerySection = () => {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -817,7 +808,7 @@ const GallerySection = () => {
                 return (
                   <div
                     key={p.id}
-                    onClick={() => { window.location.hash = `#/project/${p.id}`; }}
+                    onClick={() => { trackEvent('project_click', { project_id: p.id, project_title: p.title, location: 'home_section' }); navigate(`/project/${p.id}`); }}
                     className="group relative cursor-pointer h-80 rounded-[2rem] overflow-hidden border border-primary/10 shadow-xl"
                   >
                     <img
@@ -837,7 +828,7 @@ const GallerySection = () => {
             </div>
             <div className="mt-10 flex justify-center md:justify-end">
               <button
-                onClick={() => { window.location.hash = '#/gallery'; }}
+                onClick={() => { trackEvent('gallery_cta_click', { location: 'home_section' }); navigate('/gallery'); }}
                 className="flex items-center gap-2 text-accent hover:text-accent/80 font-sans font-medium transition-colors group"
               >
                 عرض كل المشاريع
@@ -855,6 +846,7 @@ const GallerySection = () => {
 const GalleryPage = () => {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -903,7 +895,7 @@ const GalleryPage = () => {
                 return (
                   <div
                     key={p.id}
-                    onClick={() => { window.location.hash = `#/project/${p.id}`; }}
+                    onClick={() => { trackEvent('project_click', { project_id: p.id, project_title: p.title, location: 'gallery_page' }); navigate(`/project/${p.id}`); }}
                     className="group relative cursor-pointer h-80 rounded-[2rem] overflow-hidden border border-primary/10 shadow-xl"
                   >
                     <img
@@ -932,7 +924,9 @@ const GalleryPage = () => {
 };
 
 // Single Project Page
-const ProjectPage = ({ projectId }) => {
+const ProjectPage = () => {
+  const { projectId } = useParams();
+  const navigate = useNavigate();
   const [project, setProject] = useState(null);
   const [loading, setLoading] = useState(true);
   const [photoIndex, setPhotoIndex] = useState(0);
@@ -965,7 +959,7 @@ const ProjectPage = ({ projectId }) => {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center gap-4 text-primary">
         <p className="font-heading text-2xl">المشروع غير موجود</p>
-        <button onClick={() => { window.location.hash = '#/'; }} className="text-accent hover:underline font-sans">العودة للرئيسية</button>
+        <button onClick={() => navigate('/')} className="text-accent hover:underline font-sans">العودة للرئيسية</button>
       </div>
     );
   }
@@ -981,7 +975,7 @@ const ProjectPage = ({ projectId }) => {
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-xl border-b border-primary/10 px-6 lg:px-24 py-5 flex items-center justify-between">
         <button
-          onClick={() => { window.location.hash = '#/gallery'; }}
+          onClick={() => navigate('/gallery')}
           className="flex items-center gap-2 text-primary/70 hover:text-accent transition-colors font-sans font-medium text-sm"
         >
           <ChevronRight className="w-4 h-4" />
@@ -1050,13 +1044,13 @@ const ProjectPage = ({ projectId }) => {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center mt-12">
-            <MagneticButton className="text-base px-10 py-4" onClick={() => window.location.href = 'tel:+201017781162'}>
+            <MagneticButton className="text-base px-10 py-4" onClick={() => { trackEvent('cta_call_click', { location: 'project_page', project_id: projectId }); window.location.href = 'tel:+201017781162'; }}>
               احجز استشارتك الآن <PhoneCall size={18} className="mr-2" />
             </MagneticButton>
             <MagneticButton
               variant="outline"
               className="text-base px-10 py-4"
-              onClick={() => { window.location.hash = '#/'; }}
+              onClick={() => navigate('/')}
             >
               العودة للرئيسية <MoveRight size={18} className="mr-2 rotate-180" />
             </MagneticButton>
@@ -1072,6 +1066,7 @@ const ProjectPage = ({ projectId }) => {
 // CONTACT PAGE
 // -------------------------------------------------------
 const ContactPage = () => {
+  const navigate = useNavigate();
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -1087,6 +1082,7 @@ const ContactPage = () => {
       value: <span dir="ltr" className="inline-block text-right">010 17781162</span>,
       href: 'tel:+201017781162',
       cta: 'اتصل الآن',
+      trackType: 'phone',
     },
     {
       icon: (
@@ -1098,6 +1094,7 @@ const ContactPage = () => {
       value: 'hisham.yousef@gmail.com',
       href: 'mailto:hisham.yousef@gmail.com',
       cta: 'راسلنا',
+      trackType: 'email',
     },
     {
       icon: (
@@ -1110,6 +1107,7 @@ const ContactPage = () => {
       value: 'بني سويف – شارع الروضة – برج الروضة',
       href: 'https://maps.app.goo.gl/fAP7YgEpr28zkn146',
       cta: 'افتح الخريطة',
+      trackType: 'map',
     },
   ];
 
@@ -1143,6 +1141,7 @@ const ContactPage = () => {
             <a
               key={item.label}
               href={item.href}
+              onClick={() => trackEvent('contact_action', { type: item.trackType })}
               target={item.href.startsWith('http') ? '_blank' : undefined}
               rel={item.href.startsWith('http') ? 'noopener noreferrer' : undefined}
               className="group relative flex flex-col gap-5 p-8 rounded-[2rem] border border-primary/10 bg-primary/5 hover:bg-accent/5 hover:border-accent/30 transition-all duration-300 hover:-translate-y-1"
@@ -1179,13 +1178,13 @@ const ContactPage = () => {
         {/* Bottom CTA */}
         <div className="mt-16 text-center">
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <MagneticButton className="text-base px-10 py-4" onClick={() => window.location.href = 'tel:+201017781162'}>
+            <MagneticButton className="text-base px-10 py-4" onClick={() => { trackEvent('cta_call_click', { location: 'contact_page' }); window.location.href = 'tel:+201017781162'; }}>
               تحدث معنا الآن <PhoneCall size={18} className="mr-2" />
             </MagneticButton>
             <MagneticButton
               variant="outline"
               className="text-base px-10 py-4"
-              onClick={() => { window.location.hash = '#/'; }}
+              onClick={() => navigate('/')}
             >
               العودة للرئيسية <MoveRight size={18} className="mr-2 rotate-180" />
             </MagneticButton>
@@ -1220,32 +1219,14 @@ const MainLanding = () => {
 import AdminGallery from './AdminGallery';
 
 export default function App() {
-  const [currentRoute, setCurrentRoute] = useState(window.location.hash || '#/');
-
-  useEffect(() => {
-    const handleHashChange = () => {
-      setCurrentRoute(window.location.hash || '#/');
-    };
-    window.addEventListener('hashchange', handleHashChange);
-    return () => window.removeEventListener('hashchange', handleHashChange);
-  }, []);
-
-  if (currentRoute.startsWith('#/admin')) {
-    return <AdminGallery />;
-  }
-
-  if (currentRoute.startsWith('#/gallery')) {
-    return <GalleryPage />;
-  }
-
-  if (currentRoute.startsWith('#/project/')) {
-    const projectId = currentRoute.replace('#/project/', '');
-    return <ProjectPage projectId={projectId} />;
-  }
-
-  if (currentRoute.startsWith('#/contact')) {
-    return <ContactPage />;
-  }
-
-  return <MainLanding />;
+  return (
+    <Routes>
+      <Route path="/" element={<MainLanding />} />
+      <Route path="/gallery" element={<GalleryPage />} />
+      <Route path="/project/:projectId" element={<ProjectPage />} />
+      <Route path="/contact" element={<ContactPage />} />
+      <Route path="/admin/*" element={<AdminGallery />} />
+      <Route path="*" element={<MainLanding />} />
+    </Routes>
+  );
 }

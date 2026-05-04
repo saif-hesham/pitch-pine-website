@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { supabase } from './supabase';
 import { Upload, Trash, Plus, Image as ImageIcon, Loader2, LogOut, ArrowRight } from 'lucide-react';
 
@@ -220,10 +221,10 @@ export default function AdminGallery() {
           </form>
 
           <div className="mt-10 pt-6 border-t border-primary/5">
-            <a href="#/" className="block text-center text-primary/40 hover:text-primary transition-colors text-sm font-sans flex items-center justify-center gap-2 group">
+            <Link to="/" className="block text-center text-primary/40 hover:text-primary transition-colors text-sm font-sans flex items-center justify-center gap-2 group">
               العودة للموقع
               <ArrowRight className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-            </a>
+            </Link>
           </div>
         </div>
       </div>
@@ -239,10 +240,10 @@ export default function AdminGallery() {
             <h1 className="font-heading font-bold text-2xl">PITCH PINE <span className="text-accent text-lg">Admin</span></h1>
           </div>
           <div className="flex gap-8 items-center">
-            <a href="#/" className="text-primary/60 hover:text-primary transition-colors text-sm font-sans flex items-center gap-2">
+            <Link to="/" className="text-primary/60 hover:text-primary transition-colors text-sm font-sans flex items-center gap-2">
               <ArrowRight className="w-4 h-4" />
               الموقع العام
-            </a>
+            </Link>
             <button
               onClick={handleLogout}
               className="flex items-center gap-2 px-4 py-2 rounded-xl bg-primary/5 hover:bg-primary/10 transition-colors text-sm font-sans"
