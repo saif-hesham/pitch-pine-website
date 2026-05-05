@@ -1,9 +1,12 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
+  define: {
+    'process.env.REACT_APP_VERCEL_OBSERVABILITY_CLIENT_CONFIG': JSON.stringify(process.env.REACT_APP_VERCEL_OBSERVABILITY_CLIENT_CONFIG),
+    'process.env.REACT_APP_VERCEL_OBSERVABILITY_BASEPATH': JSON.stringify(process.env.REACT_APP_VERCEL_OBSERVABILITY_BASEPATH),
+  },
   build: {
     rollupOptions: {
       output: {
