@@ -808,7 +808,7 @@ const GallerySection = () => {
                 return (
                   <div
                     key={p.id}
-                    onClick={() => { trackEvent('project_click', { project_id: p.id, project_title: p.title, location: 'home_section' }); navigate(`/project/${p.id}`); }}
+                    onClick={() => { trackEvent('project_click', { project_id: p.id, project_title: p.title, location: 'home_section' }); navigate(`/gallery/${p.slug}`); }}
                     className="group relative cursor-pointer h-80 rounded-[2rem] overflow-hidden border border-primary/10 shadow-xl"
                   >
                     <img
@@ -895,7 +895,7 @@ const GalleryPage = () => {
                 return (
                   <div
                     key={p.id}
-                    onClick={() => { trackEvent('project_click', { project_id: p.id, project_title: p.title, location: 'gallery_page' }); navigate(`/project/${p.id}`); }}
+                    onClick={() => { trackEvent('project_click', { project_id: p.id, project_title: p.title, location: 'gallery_page' }); navigate(`/gallery/${p.slug}`); }}
                     className="group relative cursor-pointer h-80 rounded-[2rem] overflow-hidden border border-primary/10 shadow-xl"
                   >
                     <img
@@ -925,7 +925,7 @@ const GalleryPage = () => {
 
 // Single Project Page
 const ProjectPage = () => {
-  const { projectId } = useParams();
+  const { slug } = useParams();
   const navigate = useNavigate();
   const [project, setProject] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -936,7 +936,7 @@ const ProjectPage = () => {
       const { data, error } = await supabase
         .from('projects')
         .select('*')
-        .eq('id', projectId)
+        .eq('slug', slug)
         .single();
       if (!error && data) {
         setProject(data);
@@ -945,7 +945,7 @@ const ProjectPage = () => {
       setLoading(false);
     };
     fetchProject();
-  }, [projectId]);
+  }, [slug]);
 
   if (loading) {
     return (
@@ -1001,12 +1001,12 @@ const ProjectPage = () => {
 
           {/* Main image viewer */}
           {images.length > 0 ? (
-            <div className="relative rounded-[2rem] overflow-hidden border border-primary/10 shadow-2xl bg-surface mb-4" style={{ aspectRatio: '16/9' }}>
+            <div className="relative rounded-[2rem] overflow-hidden border border-primary/10 shadow-2xl bg-surface mb-4 flex items-center justify-center max-h-[80vh]">
               <img
                 key={photoIndex}
                 src={images[photoIndex]}
                 alt={`${project.title} - مطابخ بتش باين بني سويف - صورة ${photoIndex + 1}`}
-                className="w-full h-full object-cover"
+                className="max-w-full max-h-[80vh] object-contain"
               />
               {images.length > 1 && (
                 <>
@@ -1044,7 +1044,7 @@ const ProjectPage = () => {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center mt-12">
-            <MagneticButton className="text-base px-10 py-4" onClick={() => { trackEvent('cta_call_click', { location: 'project_page', project_id: projectId }); window.location.href = 'tel:+201017781162'; }}>
+            <MagneticButton className="text-base px-10 py-4" onClick={() => { trackEvent('cta_call_click', { location: 'project_page', project_id: project?.id }); window.location.href = 'tel:+201017781162'; }}>
               احجز استشارتك الآن <PhoneCall size={18} className="mr-2" />
             </MagneticButton>
             <MagneticButton
@@ -1223,7 +1223,7 @@ export default function App() {
     <Routes>
       <Route path="/" element={<MainLanding />} />
       <Route path="/gallery" element={<GalleryPage />} />
-      <Route path="/project/:projectId" element={<ProjectPage />} />
+      <Route path="/gallery/:slug" element={<ProjectPage />} />
       <Route path="/contact" element={<ContactPage />} />
       <Route path="/admin/*" element={<AdminGallery />} />
       <Route path="*" element={<MainLanding />} />

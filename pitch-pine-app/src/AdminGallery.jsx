@@ -3,6 +3,33 @@ import { Link } from 'react-router-dom';
 import { supabase } from './supabase';
 import { Upload, Trash, Plus, Image as ImageIcon, Loader2, LogOut, ArrowRight, Pencil, Star, Check, X } from 'lucide-react';
 
+// Generate a URL-friendly slug from an Arabic (or any) title
+const generateSlug = (title) => {
+  return title
+    .trim()
+    .replace(/\s+/g, '-')              // spaces → hyphens
+    .replace(/[^\p{L}\p{N}-]/gu, '')   // keep letters (Arabic/Latin), numbers, hyphens
+    .replace(/-+/g, '-')               // collapse multiple hyphens
+    .replace(/^-|-$/g, '');            // trim leading/trailing hyphens
+};
+
+// Check Supabase for uniqueness and append -2, -3, etc. if needed
+const generateUniqueSlug = async (title, excludeId = null) => {
+  const baseSlug = generateSlug(title);
+  let slug = baseSlug;
+  let counter = 1;
+
+  while (true) {
+    let query = supabase.from('projects').select('id').eq('slug', slug);
+    if (excludeId) query = query.neq('id', excludeId);
+    const { data } = await query;
+    if (!data || data.length === 0) break;
+    counter++;
+    slug = `${baseSlug}-${counter}`;
+  }
+  return slug;
+};
+
 export default function AdminGallery() {
   const [session, setSession] = useState(null);
   const [email, setEmail] = useState('');
@@ -245,6 +272,7 @@ export default function AdminGallery() {
           description: description.trim(),
           images: finalImages,
           cover_index: safeCoverIndex,
+          slug: await generateUniqueSlug(title.trim(), projectId),
         };
         // Preserve original created_at if it exists
         if (createdAt) {
@@ -266,6 +294,7 @@ export default function AdminGallery() {
         }
       } else {
         // Create in database
+        const slug = await generateUniqueSlug(title.trim());
         const { data: insertedData, error: dbError } = await supabase
           .from('projects')
           .insert([
@@ -274,6 +303,7 @@ export default function AdminGallery() {
               description: description.trim(),
               images: finalImages,
               cover_index: safeCoverIndex,
+              slug,
             },
           ])
           .select();
